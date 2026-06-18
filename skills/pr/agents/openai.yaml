@@ -1,0 +1,4 @@
+interface:
+  display_name: "PR"
+  short_description: "Draft PR body from repo template"
+  default_prompt: "Use $pr to draft a PR."

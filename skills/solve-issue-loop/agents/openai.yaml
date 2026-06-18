@@ -1,0 +1,4 @@
+interface:
+  display_name: "Solve Issue Loop"
+  short_description: "Issue fix to draft PR workflow"
+  default_prompt: "Use $solve-issue-loop to solve issue."
