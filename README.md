@@ -1,6 +1,6 @@
-# Skills
+# human-out-of-loop
 
-Three small Codex skills for GitHub issue-building loops.
+Codex skills for human-out-of-loop GitHub issue-building loops.
 
 ## Skills
 
