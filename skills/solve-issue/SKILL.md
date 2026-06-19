@@ -1,23 +1,23 @@
 ---
 name: solve-issue
-description: "Orchestrate GitHub issue processing for open issues labeled ready: auto-determine internal vs external repo mode, create two ponytail threads per issue, and call $solve-issue-loop with an explicit task packet. Use when the user says \"solve issue\", \"building loops\", asks to process ready issues, or wants issue-to-PR automation."
+description: "Run one GitHub issue loop from an explicit task packet containing issue, repo, mode, implementation ponytail thread, review ponytail thread, artifact paths, pass marker, and stop protocol. Implement, verify, call $pr, then heartbeat until review passes. Use when $solve-issues hands off one open issue labeled ready or when the user provides one complete task packet."
 ---
 
 # Solve Issue
 
-Auto-determine mode once per repo: internal for the user's own repos; external otherwise. Ask only if ownership is ambiguous.
+Input: one task packet from `$solve-issues`. Do not fetch queues or infer missing context.
 
-For each open issue labeled `ready`:
+Implementation thread:
 
-1. Fetch one issue with `state:open` and `label:ready`; determine the mode.
-2. Create two ponytail threads: implementation and review.
-3. Call `$solve-issue-loop` with a task packet:
-   - repo, issue number, issue URL, mode
-   - implementation thread ID, review thread ID
-   - branch/worktree path if already created
-   - artifact paths: `DRAFT.md`, `REVIEW.md`, `.codex-pr-media/`
-   - review pass marker: `PASS`
-   - stop protocol: send the implementation thread a stop message after pass
-4. Move to the next ready issue only after that loop stops.
+1. Read the issue, comments, linked PRs, and relevant code.
+2. Implement, verify with repo checks, and capture before/after media for user-facing changes.
+3. Use `$pr` with the supplied mode.
+4. Start the review thread only after `$pr` returns a draft PR URL or writes `DRAFT.md`.
+5. Enter heartbeat mode and resolve review comments until the review thread returns the pass marker.
 
-Do not implement inside this skill; it only schedules isolated per-issue loops.
+Review thread:
+
+1. Internal: review the draft GitHub PR and comment on it.
+2. External: review `DRAFT.md` and write gitignored `REVIEW.md`.
+3. If changes are needed, write actionable comments.
+4. If review passes, write `PASS` in the PR comment or `REVIEW.md`, then send the implementation thread the stop message from the task packet.
