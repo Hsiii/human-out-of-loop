@@ -11,7 +11,7 @@ Use the repo's template exactly when present. Make the title convey importance a
 
 Internal: use the GitHub Yeet skill for branch publish and real draft PR creation.
 
-External: do not open a GitHub PR. Ensure `DRAFT.md`, `REVIEW.md`, and prepared media are gitignored, then write the PR title/body and media references to `DRAFT.md`.
+External: do not open a GitHub PR. Ensure `DRAFT.md`, `REVIEW.md`, and `.codex-pr-media/` are gitignored, then write the PR title/body and media references to `DRAFT.md`.
 
 When there is no template, use:
 
