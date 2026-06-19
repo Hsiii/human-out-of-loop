@@ -12,6 +12,16 @@ These skills expect the `ponytail` skill to be installed for implementation and 
 - `solve-issue`: runs one issue only; it receives the task packet, coordinates implementation/review heartbeat, and stops on the explicit `PASS` marker.
 - `pr`: triggered by "pr"; internal mode uses the repo template, Yeet, and browser media upload to create a real draft PR, while external mode writes gitignored `DRAFT.md` and `.codex-pr-media/` without opening a GitHub PR.
 
+## Automation
+
+Ask Codex to create an automation with this prompt:
+
+```text
+Call $solve-issues for each Git repo under the current workspace.
+```
+
+Pick your own trigger time, trigger interval, and CWD. The CWD should be a folder that contains the repositories you want the automation to process.
+
 ## Why
 
 This makes my issue-to-PR workflow require less human-in-the-loop work.
