@@ -12,13 +12,14 @@ The implementation and review threads must run in the dedicated worktree supplie
 Implementation thread:
 
 1. Read the issue, comments, linked PRs, and relevant code.
-2. Implement, commit, verify with repo checks, and capture before/after media for user-facing changes.
-3. Use `$pr` with the supplied mode and artifact paths.
-4. Require `$pr` to return `{ mode, prUrl | draftPath, branch, headSha, media }`. If this result is incomplete, fix `$pr` output before review starts.
-5. Send the review thread a concrete review prompt with the repo, issue URL, mode, worktree path, branch, head SHA, PR URL or `DRAFT.md` path, media paths, `REVIEW.md` path, pass marker, and review permissions.
-6. Create or use heartbeat automation, or explicitly poll with `read_thread`, until the review thread returns the exact pass marker from the task packet.
-7. For each actionable review comment, update the implementation, commit fixes, update the PR or `DRAFT.md`, send the review thread a new review prompt with the new head SHA and pass marker, and continue.
-8. On the exact pass marker, send the stop/archive message from the task packet and report completion to the orchestrator.
+2. For user-facing changes, capture "before" media in the supplied media directory before editing files whenever the current behavior can be shown.
+3. Implement, commit, verify with repo checks, and capture "after" media for user-facing changes.
+4. Use `$pr` with the supplied mode and artifact paths.
+5. Require `$pr` to return `{ mode, prUrl | draftPath, branch, headSha, media }`. If this result is incomplete, fix `$pr` output before review starts.
+6. Send the review thread a concrete review prompt with the repo, issue URL, mode, worktree path, branch, head SHA, PR URL or `DRAFT.md` path, media paths, `REVIEW.md` path, pass marker, and review permissions.
+7. Create or use heartbeat automation, or explicitly poll with `read_thread`, until the review thread returns the exact pass marker from the task packet.
+8. For each actionable review comment, update the implementation, commit fixes, update the PR or `DRAFT.md`, send the review thread a new review prompt with the new head SHA and pass marker, and continue.
+9. On the exact pass marker, send the stop/archive message from the task packet and report completion to the orchestrator.
 
 Review thread:
 

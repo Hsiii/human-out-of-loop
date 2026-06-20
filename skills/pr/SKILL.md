@@ -9,9 +9,9 @@ Use the supplied mode. If called directly, auto-determine mode: internal for the
 
 Use the supplied branch, worktree, and artifact paths when provided. Do not create or switch worktrees here; worktree ownership belongs to `$solve-issues`.
 
-Use the repo's template exactly when present. Make the title convey importance and maintainer value. Do not add sections the template does not ask for. For user-facing changes, include UI comparison under the most suitable heading.
+Use the repo's template exactly when present. Make the title convey importance and maintainer value. Do not add sections the template does not ask for. Do not add generic local verification notes such as `bun run build`, `bun run lint`, or test output unless the repo template explicitly asks for them; CI should report verification. For user-facing changes, include UI comparison under the most suitable heading with explicit `Before:` and `After:` labels. If only after media exists, describe the before state in text and place the uploaded image under `After:`.
 
-Internal: use the GitHub Yeet skill for branch publish and real draft PR creation. If media exists, use the logged-in browser to edit the PR body or add a PR comment, paste/upload files from `.codex-pr-media/`, and keep the inserted GitHub media URLs in the PR. Browser upload is best-effort; if the logged-in browser is unavailable, still create the draft PR and return local media paths for follow-up.
+Internal: use the GitHub Yeet skill for branch publish and real draft PR creation. Do not put local filesystem paths in the PR body. If media exists, use the in-app browser GitHub editor: open the draft PR page, open `Show options` -> `Edit comment` on the PR description, paste/upload files from `.codex-pr-media/` into the description textarea, wait for GitHub to insert `https://github.com/user-attachments/...` URLs or image tags, save with `Update comment`, then verify the saved PR body contains the GitHub attachment URLs and no local paths such as `/Users/`, `/home/`, worktree paths, or `.codex-pr-media/`. Browser upload is best-effort; if the logged-in browser is unavailable, still create the draft PR and return local media paths for follow-up, but do not include those local paths in the PR body.
 
 External: do not open a GitHub PR. Ensure `DRAFT.md`, `REVIEW.md`, and `.codex-pr-media/` are ignored, then write the PR title/body and media references to `DRAFT.md`. Prefer `.git/info/exclude` for these workflow artifacts; patch `.gitignore` only when that repository-level ignore change should be committed.
 
@@ -36,7 +36,9 @@ When there is no template, use:
 
 ## Comparison
 
-<Before/after screenshot links, or video links if the change is only visible in video or motion.>
+**Before:** <previous behavior/state, with uploaded media if available.>
+
+**After:** <new behavior/state, with uploaded media if available.>
 ```
 
 Omit `## Comparison` for non-user-facing changes.
