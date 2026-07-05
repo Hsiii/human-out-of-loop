@@ -1,13 +1,13 @@
 ---
 name: solve-issue
-description: "Run one GitHub issue loop from an explicit task packet containing issue, repo, mode, implementation ponytail thread, review ponytail thread, artifact paths, pass marker, and stop protocol. Implement, verify, call $pr, then wait on a low-frequency heartbeat until review passes. Use when $solve-issues hands off one open issue or when the user provides one complete task packet."
+description: "Run one GitHub issue loop from an explicit task packet containing issue, repo, mode, visible implementation Codex app thread, visible review Codex app thread, artifact paths, pass marker, and stop protocol. Implement, verify, call $pr, then wait on a low-frequency heartbeat until review passes. Use when $solve-issues hands off one open issue or when the user provides one complete task packet."
 ---
 
 # Solve Issue
 
 Input: one task packet from `$solve-issues`. Do not fetch queues, choose issues, change thread topology, or infer missing orchestration context.
 
-The implementation and review threads must run in the dedicated worktree supplied by the task packet. The implementation thread owns all code writes. The review thread must not change code; in external mode it may write only the supplied `REVIEW.md` path.
+The implementation and review threads must be user-owned, visible Codex app threads supplied by the task packet, not transient subagents. They must run in the dedicated worktree supplied by the task packet. The implementation thread owns all code writes. The review thread must not change code; in external mode it may write only the supplied `REVIEW.md` path.
 
 Do not busy-wait for review. Create or use a heartbeat automation that checks the review thread at a low-frequency cadence: start at no less than 10 minutes, read the review thread once per wakeup, and back off to 30 minutes after two unchanged checks. If automation is unavailable, manual `read_thread` fallback checks must follow the same cadence.
 
