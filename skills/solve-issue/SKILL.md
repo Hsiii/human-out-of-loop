@@ -1,6 +1,6 @@
 ---
 name: solve-issue
-description: "Run one GitHub issue loop from an explicit task packet containing issue, repo, mode, implementation ponytail thread, review ponytail thread, artifact paths, pass marker, and stop protocol. Implement, verify, call $pr, then wait on a low-frequency heartbeat until review passes. Use when $solve-issues hands off one open issue labeled ready or when the user provides one complete task packet."
+description: "Run one GitHub issue loop from an explicit task packet containing issue, repo, mode, implementation ponytail thread, review ponytail thread, artifact paths, pass marker, and stop protocol. Implement, verify, call $pr, then wait on a low-frequency heartbeat until review passes. Use when $solve-issues hands off one open issue or when the user provides one complete task packet."
 ---
 
 # Solve Issue

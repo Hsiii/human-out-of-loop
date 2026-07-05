@@ -1,6 +1,6 @@
 ---
 name: solve-issues
-description: "Orchestrate GitHub issue processing for up to five open issues labeled ready per repo: auto-determine internal vs external repo mode, isolate same-repo issue groups in separate worktrees, create two ponytail threads per issue, and call $solve-issue with an explicit task packet. Use when the user says \"solve issues\", \"building loops\", asks to process ready issues, or wants issue-to-PR automation."
+description: "Orchestrate GitHub issue processing for up to five open issues per repo: auto-determine internal vs external repo mode, isolate same-repo issue groups in separate worktrees, create two ponytail threads per issue, and call $solve-issue with an explicit task packet. Use when the user says \"solve issues\", \"building loops\", asks to process open issues, or wants issue-to-PR automation."
 ---
 
 # Solve Issues
@@ -9,7 +9,7 @@ Use Codex app background threads for durable work. Do not use transient subagent
 
 Do not busy-wait on background threads. Use heartbeat automation or scheduled wakeups for monitoring; direct `read_thread` checks are a fallback and must be limited to one check per thread group per wakeup. Start with a 10 minute minimum cadence, back off to 30 minutes after two unchanged checks, and return control between checks.
 
-For up to five open issues labeled `ready` per repo:
+For up to five open issues per repo:
 
 1. Determine mode once per repo: internal for the user's own repos; external otherwise.
 2. Allocate one dedicated Codex worktree per issue thread group, even when no other issue is active for the repo. The implementation thread and review thread for that issue share this worktree; no other issue may use it.
