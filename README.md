@@ -8,7 +8,7 @@ These skills expect the `ponytail` skill to be installed for implementation and 
 
 ## Skills
 
-- `solve-issues`: triggered by "solve issues" or "building loops"; fetches open issues, determines internal/external mode, creates two visible ponytail Codex app threads per issue, and calls `$solve-issue` with a task packet.
+- `solve-issues`: triggered by "solve issues" or "building loops"; fetches open issues, determines internal/external mode, creates a neutral worktree seed plus two visible ponytail Codex app worker threads per issue, and calls `$solve-issue` with a task packet. The implementation and review workers are same-directory siblings forked from the neutral seed, never from each other, so role context does not leak between them.
 - `solve-issue`: runs one issue only; it receives the task packet, coordinates implementation/review heartbeat, and stops on the explicit `PASS` marker.
 - `pr`: triggered by "pr"; internal mode uses the repo template, Yeet, and browser media upload to create a real draft PR, while external mode writes gitignored `DRAFT.md` and `.codex-pr-media/` without opening a GitHub PR.
 
