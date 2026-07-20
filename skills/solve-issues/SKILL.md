@@ -1,32 +1,32 @@
 ---
 name: solve-issues
-description: "Turn one exact GitHub issue or a random batch of open issues into reviewed changes. A bare positive integer targets that issue number; `random N` selects N eligible issues with no hard maximum; no argument selects one. Continue interrupted or heartbeat-supervised runs without duplicating work. Use when the user says \"solve issue\", \"solve issues\", \"building loops\", asks to process open issues, wants issue-to-PR automation, or asks to continue an existing issue run."
+description: "Turn one exact GitHub issue or a picked batch of open issues into reviewed changes. A bare positive integer targets that issue number; `pick N` selects N eligible issues with no hard maximum and runs them in parallel unless the user says one by one; no argument selects one. Continue interrupted or heartbeat-supervised runs without duplicating work. Use when the user says \"solve issue\", \"solve issues\", \"building loops\", asks to process open issues, wants issue-to-PR automation, or asks to continue an existing issue run."
 ---
 
 # Solve Issues
 
 Invocation:
 
-- `$solve-issues` selects one eligible open issue at random.
+- `$solve-issues` selects one eligible open issue.
 - `$solve-issues <issue-number>` targets that exact positive issue number.
-- `$solve-issues random [amount]` selects distinct eligible open issues at random. Treat an omitted amount as `1`, require a positive integer, never silently cap it, and process all eligible issues when fewer than the requested amount remain.
+- `$solve-issues pick [amount]` selects distinct eligible open issues. Treat an omitted amount as `1`, require a positive integer, never silently cap it, and process all eligible issues when fewer than the requested amount remain.
 
-An issue is eligible only when it is open and is not covered by an open or draft PR through a GitHub Development/closing-issue link or closing keyword. An incidental mention does not count. For an exact target, verify existence, open state, and coverage before creating tasks. If it is missing, closed, or covered, stop without substituting another issue and report `ISSUE_SKIPPED issue=<number> reason=<not_found|not_open|covered_by_pr>`; include `pr=<url>` when covered. The random amount controls total work, not concurrency.
+An issue is eligible only when it is open and is not covered by an open or draft PR through a GitHub Development/closing-issue link or closing keyword. An incidental mention does not count. For an exact target, verify existence, open state, and coverage before creating tasks. If it is missing, closed, or covered, stop without substituting another issue and report `ISSUE_SKIPPED issue=<number> reason=<not_found|not_open|covered_by_pr>`; include `pr=<url>` when covered. The picked amount controls total work.
 
 Determine mode from ownership: internal for the user's repos, external otherwise. Internal runs always publish a real draft PR after local checks and review; external runs stop at a reviewed local `DRAFT.md` and never write to GitHub. Ask only when ownership is ambiguous.
 
 Treat natural follow-ups in an existing run—such as “continue”, “keep going”, “finish it”, or a status request that reveals unfinished work—as continuation behavior, not a new invocation parameter. A heartbeat wake or recovery after an interrupted wait does the same. Read [references/resume.md](references/resume.md) and reconcile existing tasks and artifacts before creating anything.
 
-Run sequentially unless the user explicitly asks for parallel or concurrent work. In parallel mode, dispatch every selected issue immediately; otherwise finish one before starting the next.
+Run picked batches in parallel by default, dispatching every selected issue immediately. Run sequentially only when the user says “one by one,” “sequentially,” or equivalent; then finish one issue before starting the next.
 
 Use user-owned, sidebar-visible Codex app tasks for durable work. Give every issue a dedicated worktree and three-task group: one neutral seed plus implementation and review siblings forked from that seed with `environment: { type: "same-directory" }`. Never fork one worker from the other or use transient subagents. Unpin the seed after capturing both worker IDs, but never archive any task automatically.
 
-Use `set_thread_title` to keep progress visible in narrow sidebars. Title the orchestration task `ISS <selector> run`, using `#<issue>` for an exact target and `R<amount>` for a random batch. Title workers `#<issue> <type> <status>`, where type is `SET`, `DEV`, or `REV`, and status is one of `setup`, `wait`, `build`, `check`, `draft`, `review`, `fix`, `pr`, `ci`, `done`, or `block`. Update titles only on stage changes; examples: `#65 DEV build`, `#65 REV review`.
+Use `set_thread_title` to keep progress visible in narrow sidebars. Title the orchestration task `ISS <selector> run`, using `#<issue>` for an exact target and `P<amount>` for a picked batch. Title workers `#<issue> <type> <status>`, where type is `SET`, `DEV`, or `REV`, and status is one of `setup`, `wait`, `build`, `check`, `draft`, `review`, `fix`, `pr`, `ci`, `done`, or `block`. Update titles only on stage changes; examples: `#65 DEV build`, `#65 REV review`.
 
 For each repo:
 
 1. Determine internal or external mode once per repo.
-2. Query issues and open PRs, including drafts. For an exact target, apply the existence, open-state, and coverage checks above. For random mode, sample the requested number without replacement from eligible issues. Recheck immediately before each sequential dispatch or once just before a parallel batch.
+2. Query issues and open PRs, including drafts. For an exact target, apply the existence, open-state, and coverage checks above. For pick mode, select the requested number without replacement from eligible issues. Recheck immediately before each sequential dispatch or once just before a parallel batch.
 3. Derive `<type>/<short-kebab-description>` using the narrowest accurate prefix from `fix`, `feat`, `docs`, `refactor`, `test`, or `chore`. An issue number is optional. Never use `codex/`, usernames, or another namespace.
 4. Create the neutral seed in a dedicated worktree as `#<issue> SET setup`. Its prompt may only materialize the worktree and identify itself as neutral setup context.
 5. Fork the implementation and review tasks as same-directory siblings. Title them `#<issue> DEV wait` and `#<issue> REV wait`, and pin both while active.

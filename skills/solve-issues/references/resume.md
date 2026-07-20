@@ -22,4 +22,4 @@ Use for “continue,” unfinished status, heartbeat, or interrupted-wait recove
 ## Keep It Alive
 
 - Keep exactly one heartbeat on the orchestrator while unattended work remains; update it, never add another. Each wake reconciles once, takes one bounded `wait_threads` snapshot of active workers, then yields. Delete it when all issues are terminal.
-- Restore titles from actual state. Preserve sequential/parallel mode and selector; never increase a random count. Never archive tasks or remove worktrees automatically.
+- Restore titles from actual state. Preserve sequential/parallel mode and selector; never increase a picked count. Never archive tasks or remove worktrees automatically.

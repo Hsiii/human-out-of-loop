@@ -1,4 +1,4 @@
 interface:
   display_name: "Solve Issues"
-  short_description: "Run exact or random issue-to-review loops"
+  short_description: "Run exact or picked issue-to-review loops"
   default_prompt: "Use $solve-issues to process one eligible open issue end-to-end."
