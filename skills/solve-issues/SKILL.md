@@ -1,6 +1,6 @@
 ---
 name: solve-issues
-description: "Turn a requested number of open GitHub issues into reviewed changes. Accepts an optional positive integer amount, defaults to 1, has no hard maximum, and can resume interrupted or heartbeat-supervised runs without duplicating work. Use when the user says \"solve issues\", \"building loops\", asks to process open issues, wants issue-to-PR automation, or asks to resume a solve-issues run."
+description: "Turn a requested number of open GitHub issues into reviewed changes. Accepts an optional positive integer amount, defaults to 1, has no hard maximum, and can resume interrupted or heartbeat-supervised runs without duplicating work. Use when the user says \"solve issue\", \"solve issues\", \"building loops\", asks to process open issues, wants issue-to-PR automation, or asks to resume a solve-issues run."
 ---
 
 # Solve Issues
