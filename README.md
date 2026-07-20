@@ -4,24 +4,23 @@ Codex skills to turn issues into reviewed PRs automatically.
 
 ## Prerequisite
 
-These skills expect the `ponytail` skill to be installed for implementation and review threads. If you do not have it, install it from [DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail).
+The [Ponytail](https://github.com/DietrichGebert/ponytail) skill to prevent 5.6 Sol from going crazy.
 
 ## Skills
 
 - `$solve-issues [amount]`
-  - Defaults to `1`; no maximum.
-  - Internal repos: reviewed draft PR, green CI, Codex-labeled review.
-  - External repos: reviewed local `DRAFT.md`; no GitHub writes.
-  - Sequential by default; say `parallel` to run every selected issue concurrently.
-  - `$solve-issues resume` and the run heartbeat recover existing workers; finished workers stay available for follow-up changes.
+  - Defaults to solving one issue, can be set to any amount.
+  - Sequential by default; say `parallel` to run all at once when you have enough tokens to burn
+  - Calls `$pr` and review it to decide whether to continue working on it
 - `$pr`
-  - Internal repos: publish a real draft PR after checks and review.
-  - External repos: prepare a gitignored local `DRAFT.md` only.
-  - Never mark ready, request reviewers, merge, or enable auto-merge.
+  - For your own repos, publish a draft PR with best practices like include screenshots for UI changes.
+  - For external repos, prepare a local `DRAFT.md`
 
 ## Automation
 
-Ask Codex to create an automation that calls `$solve-issues` for each Git repo under the current workspace, then choose the schedule and workspace folder.
+To make it even more automized, you can ask Codex to create an automation that calls `$solve-issues[amount]` for each Git repo under the current workspace, then choose the schedule and workspace folder.
+
+In my case, I maintain symlinks with [Hsiii/fish-alias](https://github.com/Hsiii/fish-alias) to collect ongoing projects into a directory for this.
 
 ## Why
 
