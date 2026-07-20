@@ -1,4 +1,4 @@
 interface:
   display_name: "Solve Issue"
-  short_description: "Solve one or more issues"
+  short_description: "Solve one or more issues safely"
   default_prompt: "Use $solve-issue to process 1 open issue end-to-end."
