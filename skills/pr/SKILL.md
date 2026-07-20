@@ -15,6 +15,6 @@ Prepare `DRAFT.md` for both modes, ignoring `DRAFT.md`, `REVIEW.md`, and `.codex
 
 External: stop after the reviewed local draft. Never push, open a PR, or post GitHub review activity.
 
-Internal: after checks and review pass for the current head, use GitHub Yeet to push and open a real draft PR. Upload media in the GitHub editor and verify the saved body contains GitHub attachment URLs and no local paths. Never mark ready, merge, request reviewers, or enable auto-merge. Return `{ state: "published", prUrl, branch, headSha, media }` after verifying the URL and body.
+Internal: after checks and a review pass covering the whole base-to-current-head PR diff, use GitHub Yeet to push and open a real draft PR. Upload media in the GitHub editor and verify the saved body contains GitHub attachment URLs and no local paths. Never mark ready, merge, request reviewers, or enable auto-merge. Return `{ state: "published", prUrl, branch, headSha, media }` after verifying the URL and body.
 
-When Codex reviews the published PR, submit at most one `COMMENT` review per head and begin its body exactly `Codex reviewed this PR at <shortHeadSha>.` Never impersonate the user or claim GitHub approval. The caller owns CI monitoring and final-head review.
+When Codex reviews the published PR, review the complete PR diff from its base through the current head, never only the latest commit. Submit at most one `COMMENT` review per head and begin its body exactly `Codex reviewed this PR at <shortHeadSha>.` Never impersonate the user or claim GitHub approval. The caller owns CI monitoring and full-PR review of the final head.

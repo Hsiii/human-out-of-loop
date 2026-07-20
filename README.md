@@ -25,7 +25,7 @@ Running `$solve-issues` turns the thread into an orchestration layer. It will st
 Like how you'd use (I guess) codex to solve issues normally, this thread will receive context from the orchestrator and be asked to solve the issue, then calls `$pr` when it's done.
 
 ### The reviewer thread
-The reviewer thread will review the PR drafted, then ask the developer to update the PR if needed in a loop.
+The reviewer thread reviews the whole draft PR diff, not only the latest commit. It asks the developer to update the PR when needed, then reviews the full updated PR again until it passes.
 
 ## Automation
 
