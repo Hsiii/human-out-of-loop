@@ -18,7 +18,7 @@ Ask Codex to install the skills from `Hsiii/human-out-of-loop`.
   - For your own repos, opens a polished draft PR.
   - For external repos, drafts it in a local `DRAFT.md`.
 - `$solve-issues`
-  - Picks eligible open issues without an existing solving PR, implements minimal solutions, calls `$pr`, and reviews the full PRs until they pass.
+  - Picks eligible open issues without an existing solving PR, implements minimal solutions, calls `$pr`, and reviews them until they pass.
 
 ## Examples
 
@@ -27,7 +27,7 @@ Ask Codex to install the skills from `Hsiii/human-out-of-loop`.
 | Draft a polished PR | `$pr` |
 | Solve issue #65 | `$solve-issues 65` |
 | Solve five issues in parallel | `$solve-issues pick 5` |
-| Solve five one by one to conserve tokens | `$solve-issues pick 5, one by one` |
+| Solve five one by one so token limits do not interrupt the whole batch | `$solve-issues pick 5, one by one` |
 
 ## How it works
 
@@ -35,11 +35,11 @@ Running `$solve-issues` turns the current thread into an orchestrator. It gives 
 
 The dev thread receives the issue, implements and commits, runs checks, captures comparison media when useful, and calls `$pr`.
 
-The reviewer thread reviews the full PR and returns findings to the dev thread until it passes.
+The reviewer thread reviews the PR and returns findings to the dev thread until it passes.
 
 ## What Codex modifies
 
-For repositories you own, `$solve-issues` may create worktrees, branches, commits, draft artifacts, media, and a real draft PR. It runs local checks, reviews the full PR diff, waits for configured GitHub checks, and posts a review comment beginning with `Codex reviewed this PR at...`.
+For repositories you own, `$solve-issues` may create worktrees, branches, commits, draft artifacts, media, and a real draft PR. It runs local checks, reviews the PR, waits for configured GitHub checks, and posts `Codex reviewed this PR. No issues found.` after a passing review.
 
 For external repositories, it may create local worktrees, branches, commits, `DRAFT.md` (PR body draft), `REVIEW.md` (as local PR comments), and comparison media. It never pushes, opens a PR, or posts any GitHub activity.
 
