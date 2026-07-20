@@ -1,6 +1,6 @@
 ---
 name: solve-issues
-description: "Orchestrate GitHub issue processing for up to five open issues per repo: auto-determine internal vs external repo mode, isolate same-repo issue groups in separate worktrees, create a neutral worktree seed plus two visible ponytail Codex app threads per issue, and call $solve-issue with an explicit task packet. Use when the user says \"solve issues\", \"building loops\", asks to process open issues, or wants issue-to-PR automation."
+description: "Orchestrate GitHub issue processing for up to five open issues per repo: auto-determine internal vs external repo mode, isolate same-repo issue groups in separate worktrees, create a neutral worktree seed plus two visible ponytail Codex app threads per issue, and call $solve-issue with an explicit task packet. Supports sequential scheduling by default and immediate five-issue fan-out when the user asks to work in parallel, concurrently, simultaneously, at once, or with equivalent intent. Use when the user says \"solve issues\", \"building loops\", asks to process open issues, or wants issue-to-PR automation."
 ---
 
 # Solve Issues
@@ -10,6 +10,13 @@ Use user-owned, sidebar-visible Codex app threads for durable work. Create the n
 Thread topology is correctness-critical. Never fork the review thread from the implementation thread, and never fork the implementation thread from the review thread. Forks copy completed conversation history, so a worker forked from another worker inherits the wrong role. To share one dedicated Codex worktree without role contamination, create a neutral worktree seed thread first, then fork the implementation and review threads as same-directory siblings from that neutral seed. Archive or unpin the seed after both worker thread IDs are captured.
 
 Do not busy-wait on visible threads. Use heartbeat automation or scheduled wakeups for monitoring; direct `read_thread` checks are a fallback and must be limited to one check per thread group per wakeup. Start with a 10 minute minimum cadence, back off to 30 minutes after two unchanged checks, and return control between checks.
+
+Choose the scheduling mode from the user's request:
+
+- Use sequential mode by default: start one issue group and wait for it to stop before starting the next.
+- Use parallel mode whenever the user expresses parallel or concurrent intent anywhere in the request. Match meaning, not only exact words; examples include `parallel`, `parallely`, `parallelize`, `concurrently`, `simultaneously`, `at once`, `all five now`, `fan out`, or equivalent phrasing.
+- Treat parallel intent as authorization to start every selected issue group immediately and as a signal that the user accepts the token usage. Do not ask for quota confirmation. Start all five `$solve-issue` loops at once when five eligible issues exist; otherwise start all available loops, still capped at five per repo.
+- Parallel mode changes scheduling only. Keep every issue in its own dedicated worktree and preserve the neutral-seed and sibling-worker topology below.
 
 For up to five open issues per repo:
 
@@ -31,6 +38,9 @@ For up to five open issues per repo:
    - review start protocol: implementation thread sends the PR result and review instructions to the review thread
    - monitor protocol: implementation thread uses heartbeat automation; fallback `read_thread` checks are one-per-wakeup, at least 10 minutes apart, and back off to 30 minutes after two unchanged checks
    - stop protocol: after pass, send a final stop/archive message to the implementation thread and unpin/archive finished visible threads when appropriate
-7. Monitor the issue thread group through the same heartbeat cadence. On each wakeup, read the implementation thread once, then either handle completion or schedule the next check. Continue to the next issue only after that group stops.
+7. Dispatch according to the selected scheduling mode:
+   - sequential: fully initialize and dispatch one issue group, then continue to the next issue only after that group stops.
+   - parallel: initialize and dispatch every selected issue group without waiting for another group to finish. Run all independent seed creation, worker setup, titles, pins, and task-packet sends concurrently when the app tools allow it.
+8. Monitor active issue groups through the same heartbeat cadence. On each wakeup, read each active implementation thread at most once, handle completed groups independently, and schedule the next check for unfinished groups. In parallel mode, keep monitoring all groups concurrently; one group's completion or failure must not stop the others.
 
 Ask only if ownership is ambiguous. Do not implement here; only schedule isolated per-issue loops.
