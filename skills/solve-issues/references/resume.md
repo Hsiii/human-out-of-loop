@@ -4,7 +4,7 @@ Use this procedure for `$solve-issues resume`, a run-level heartbeat wake, or re
 
 1. If the current task is not the orchestration task, use `list_threads` to find the matching active `ISS <amount> <status>` task in the same project. Send the resume request there. If no parent survives, adopt the run in the current task; if multiple runs match, ask the user which one.
 2. Recover the requested amount, selected issue numbers, worker IDs, worktrees, branches, publish permission, and last `wait_threads` cursors from the parent history. Cross-check with `list_threads`, Git worktrees and branches, `DRAFT.md`/`REVIEW.md`, and GitHub issues and PRs. Match by repo, issue, and branch—not title alone.
-3. Never create a replacement task, branch, worktree, review request, push, or PR when an equivalent already exists. Treat the current branch head SHA as the identity of a review result; an older pass marker is stale.
+3. Never create a replacement task, branch, worktree, review request, push, or PR when an equivalent already exists. Treat the current branch head SHA as the identity of a review result; an older pass marker is stale. Before posting to a user-owned published PR, check whether a `Codex reviewed this PR at <shortHeadSha>.` review already exists for that head and do not duplicate it. Never post review activity to an external repo.
 4. Reconcile each issue by its furthest durable stage:
    - `setup`: finish the seed, then create only missing sibling workers.
    - `build`, `check`, or `fix`: continue or wait for the existing implementation task.
