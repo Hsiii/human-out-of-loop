@@ -12,17 +12,27 @@ Codex skills that turn GitHub issues into reviewed draft PRs automaticaly so you
 
 Ask Codex to install the skills from `Hsiii/human-out-of-loop`.
 
-## Use cases
+## Skills
 
-There're two skills here, `$solve-issues` and `$pr`, you can use them like this:
+- `$pr`
+  - for your own repos, open a polished draft PR.
+  - for external repos, draft it in a local `DRAFT.md`.
+- `$solve-issues`
+   - fetches issues, makes sure they are open and no open or draft PR solving them, implement a minimal solution, calls `$pr` for them, then review the PRs till pass.
 
-| What you want | What to say |
+## Example
+
+| What you want | What to say
 | --- | --- |
 |  |
-| Solve issue #65 | `$solve-issues 65` |
-| Solve five random eligible issues sequentially | `$solve-issues random 5` |
-| Solve five at once | `$solve-issues random 5 parallel` | |
-| Draft a polished PR for the current branch | `$pr` |
+|
+|
+|Draft a polished PR   |`$pr`|||||
+Solve issue #65 | `$solve-issues 65` |
+| Solve five issues (parallely, when you have enough tokens)      | `$solve-issues pick 5` |
+|
+|    If your tokens might run out mid way |`$solve-issues pick 5, one by one`  | |
+| |
 
 ## How it works
 
