@@ -5,6 +5,6 @@ description: "Convenience alias for $solve-issues. Accepts an optional positive 
 
 # Solve Issue
 
-Treat the optional argument as the amount, defaulting to `1`. Follow `$solve-issues <amount>` exactly and preserve any explicit sequential or parallel intent from the request.
+Treat the optional argument as the amount, defaulting to `1`. Follow `$solve-issues <amount>` exactly and preserve explicit sequential, parallel, resume, and publish intent from the request. Never infer publish permission from this alias alone.
 
 This is a user-facing alias only. Implementation and review tasks receive their contracts directly and must never invoke this alias.

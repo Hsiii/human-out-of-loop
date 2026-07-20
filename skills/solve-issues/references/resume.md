@@ -8,7 +8,7 @@ Use this procedure for `$solve-issues resume`, a run-level heartbeat wake, or re
 4. Reconcile each issue by its furthest durable stage:
    - `setup`: finish the seed, then create only missing sibling workers.
    - `build`, `check`, or `fix`: continue or wait for the existing implementation task.
-   - `review`: restore the existing review wait; resend only when no request exists for the current head SHA.
+   - `draft` or `review`: restore the existing review wait; resend only when no request exists for the current head SHA.
    - `pr` or `ci`: inspect the existing draft PR and checks; never open another PR.
    - `done`: verify the final head, review pass, and any required CI result, then clean up.
    - `block`: preserve every artifact and report the exact decision or authority needed.

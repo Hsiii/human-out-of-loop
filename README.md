@@ -8,9 +8,9 @@ These skills expect the `ponytail` skill to be installed for implementation and 
 
 ## Skills
 
-- `solve-issues [amount]`: processes the requested number of eligible issues per repo, defaulting to `1` with no hard maximum. Compact task titles show each stage, and `$solve-issues resume` or the run heartbeat can recover existing workers without duplicating work.
+- `solve-issues [amount] [publish]`: processes the requested number of eligible issues per repo, defaulting to `1` with no hard maximum. It prepares and reviews locally by default; explicit `publish` permission opens draft PRs, waits for green CI, and never marks ready or merges. Compact task titles show each stage, and `$solve-issues resume` or the run heartbeat can recover existing workers without duplicating work.
 - `solve-issue [amount]`: convenience alias for `$solve-issues [amount]`, so `$solve-issue 5` works too.
-- `pr`: triggered by "pr"; internal mode uses the repo template, Yeet, and browser media upload to create a real draft PR, while external mode writes gitignored `DRAFT.md` and `.codex-pr-media/` without opening a GitHub PR.
+- `pr`: prepares a gitignored local `DRAFT.md` by default. It publishes a real draft PR only with explicit permission after checks and review pass.
 
 ## Automation
 
