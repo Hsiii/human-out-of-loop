@@ -39,11 +39,11 @@ The reviewer thread reviews the PR and returns findings to the dev thread until 
 
 ## What Codex modifies
 
-For repositories you own, `$solve-issues` may create worktrees, branches, commits, draft artifacts, media, and a real draft PR. It runs local checks, reviews the PR, waits for configured GitHub checks, and posts `Codex reviewed this PR. No issues found.` after a passing review.
+For repositories you own, `$solve-issues` may create worktrees, branches, commits, draft artifacts, media, and a real draft PR. It runs local checks, reviews the PR, and waits for configured GitHub checks.
 
 For external repositories, it may create local worktrees, branches, commits, `DRAFT.md` (PR body draft), `REVIEW.md` (as local PR comments), and comparison media. It never pushes, opens a PR, or posts any GitHub activity.
 
-The skills never mark a PR ready, request reviewers, merge, or enable auto-merge. Finished worker tasks stay available and their worktrees remain intact in case you want follow-up changes.
+The skills never post GitHub review activity, mark a PR ready, request reviewers, merge, or enable auto-merge. Review feedback stays between the reviewer and developer tasks. Finished workers and worktrees remain available for follow-up changes.
 
 ## Automation
 
