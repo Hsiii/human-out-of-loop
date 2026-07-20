@@ -15,8 +15,8 @@ Use for “continue,” unfinished status, heartbeat, or interrupted-wait recove
 | `setup` | Finish setup; add only missing sibling workers. |
 | `build`, `check`, `fix` | Continue or wait for the existing developer. |
 | `draft`, `review` | Restore review wait; resend only when the current head has no request. |
-| `pr`, `ci` | Inspect the existing draft PR and checks; never open another PR. |
-| `done` | Verify final-head review and internal CI; stop heartbeat. Keep tasks pinned/unarchived and preserve branch/worktree. For follow-ups, wake the same workers at `fix` and repeat checks, draft, full review, and PR/CI. |
+| `pr`, `ci` | Inspect the existing draft PR and checks; record `CI_SKIPPED` when none exist. Never open another PR. |
+| `done` | Verify final-head review and internal CI green/skipped; stop heartbeat. Keep tasks pinned/unarchived and preserve branch/worktree. For follow-ups, wake the same workers at `fix` and repeat checks, draft, full review, and PR/CI. |
 | `block` | Preserve everything; report the exact decision or authority needed. |
 
 ## Keep It Alive
