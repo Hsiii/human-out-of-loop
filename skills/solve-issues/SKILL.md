@@ -15,6 +15,8 @@ An issue is eligible only when it is open and is not covered by an open or draft
 
 Determine mode from ownership: internal for the user's repos, external otherwise. Internal runs always publish a real draft PR after local checks and review; external runs stop at a reviewed local `DRAFT.md` and never write to GitHub. Ask only when ownership is ambiguous.
 
+Treat natural follow-ups in an existing run—such as “continue”, “keep going”, “finish it”, or a status request that reveals unfinished work—as continuation behavior, not a new invocation parameter. A heartbeat wake or recovery after an interrupted wait does the same. Read [references/resume.md](references/resume.md) and reconcile existing tasks and artifacts before creating anything.
+
 Run sequentially unless the user explicitly asks for parallel or concurrent work. In parallel mode, dispatch every selected issue immediately; otherwise finish one before starting the next.
 
 Use user-owned, sidebar-visible Codex app tasks for durable work. Give every issue a dedicated worktree and three-task group: one neutral seed plus implementation and review siblings forked from that seed with `environment: { type: "same-directory" }`. Never fork one worker from the other or use transient subagents. Unpin the seed after capturing both worker IDs, but never archive any task automatically.
