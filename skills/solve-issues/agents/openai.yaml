@@ -1,4 +1,4 @@
 interface:
   display_name: "Solve Issues"
-  short_description: "Orchestrate issue loops"
+  short_description: "Run or resume issue-to-review loops"
   default_prompt: "Use $solve-issues to process 1 open issue end-to-end."
