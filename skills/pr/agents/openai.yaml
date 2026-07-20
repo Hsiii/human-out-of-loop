@@ -1,4 +1,4 @@
 interface:
   display_name: "PR"
-  short_description: "Prepare safely or publish with permission"
-  default_prompt: "Use $pr to prepare a local PR draft without publishing it."
+  short_description: "Internal draft PR or external local draft"
+  default_prompt: "Use $pr to create the appropriate draft for this repository."
