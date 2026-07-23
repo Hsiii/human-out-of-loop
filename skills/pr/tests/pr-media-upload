@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+skill_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
+uploader="$skill_root/scripts/pr-media-upload"
+work_dir="$(mktemp -d)"
+trap 'rm -rf -- "$work_dir"' EXIT
+
+install -d -m 0700 "$work_dir/config/pr-media" "$work_dir/bin"
+printf '%s\n' \
+  'url=https://media.example.test' \
+  'token=test-token-abcdefghijklmnopqrstuvwxyz-0123456789' \
+  >"$work_dir/config/pr-media/config"
+chmod 0600 "$work_dir/config/pr-media/config"
+
+source_file="$work_dir/preview.png"
+printf '%s' \
+  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=' |
+  base64 --decode >"$source_file"
+
+printf '%s\n' \
+  '#!/bin/sh' \
+  'case " $* " in *test-token-*) exit 1 ;; esac' \
+  'config=' \
+  'while [ "$#" -gt 0 ]; do' \
+  '  if [ "$1" = "--config" ]; then config="$2"; shift 2; continue; fi' \
+  '  shift' \
+  'done' \
+  'grep -Fq "Authorization: Bearer test-token-" "$config"' \
+  'printf "![PR preview](https://media.example.test/test.png)\\n"' \
+  >"$work_dir/bin/curl"
+chmod +x "$work_dir/bin/curl"
+
+PATH="$work_dir/bin:/usr/bin:/bin" \
+XDG_CONFIG_HOME="$work_dir/config" \
+  "$uploader" --available
+output="$(
+  PATH="$work_dir/bin:/usr/bin:/bin" \
+  XDG_CONFIG_HOME="$work_dir/config" \
+    "$uploader" --repo Hsiii/example --pr 42 "$source_file"
+)"
+[ "$output" = \
+  '![PR preview](https://media.example.test/test.png)' ]
+
+chmod 0644 "$work_dir/config/pr-media/config"
+if PATH="$work_dir/bin:/usr/bin:/bin" \
+  XDG_CONFIG_HOME="$work_dir/config" \
+  "$uploader" --available >/dev/null 2>&1; then
+  printf 'Uploader accepted a publicly readable token config\n' >&2
+  exit 1
+fi
+
+printf 'PR media client uses private HTTPS credentials without requiring SSH\n'

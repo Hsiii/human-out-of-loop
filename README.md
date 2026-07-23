@@ -27,6 +27,23 @@ Ask Codex:
 
 The skills may create branches, worktrees, commits, and comparison media. They never merge or mark a PR ready.
 
+## Optional PR media
+
+The PR skill can publish images and videos through a compatible self-hosted
+media service. Ask its operator for a two-line configuration, save it at
+`~/.config/pr-media/config`, and make it readable only by your user:
+
+```text
+url=https://media.example.com
+token=replace-with-your-token
+```
+
+```bash
+chmod 600 ~/.config/pr-media/config
+```
+
+Without that configuration, the skill uses GitHub's media uploader.
+
 ## Automation
 
 Ask Codex to create an automation that runs `$solve-issues pick [amount]` for each Git repository in a workspace, then choose the schedule and workspace folder.
