@@ -31,11 +31,11 @@ Ask Codex to install the skills from `Hsiii/human-out-of-loop`.
 
 ## How it works
 
-Running `$solve-issues` turns the current thread into an orchestrator. It gives each issue an isolated branch and worktree, a Ponytail developer thread, and an independent reviewer thread created when code is ready.
+Running `$solve-issues` turns the current thread into an orchestrator. It gives each issue an isolated branch and worktree, a Ponytail developer thread, and an independent reviewer/publisher thread created when code is ready.
 
-The dev thread receives the issue, implements and commits, runs checks, and captures comparison media when useful.
+The dev thread receives the issue, implements and commits, runs checks, and captures before and after media for every UI change—videos whenever interaction, motion, or multiple steps are involved, and images otherwise.
 
-The reviewer thread reviews the complete PR diff and returns findings to the dev thread until it passes. The orchestrator then publishes an internal draft PR or writes an external `DRAFT.md`.
+The reviewer/publisher thread runs `$pr`: it reviews the complete diff, returns findings to the dev thread until the head passes, then publishes an internal draft PR or writes an external `DRAFT.md`. Requested changes return to the dev thread and the same reviewer updates the draft after reviewing the new head.
 
 ## What Codex modifies
 
