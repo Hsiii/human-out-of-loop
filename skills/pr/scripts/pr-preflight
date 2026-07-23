@@ -34,6 +34,11 @@ if [[ "$branch" == "$default_branch" ]]; then
   exit 4
 fi
 
+if [[ ! "$branch" =~ ^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)/[a-z0-9]+(-[a-z0-9]+)*$ ]]; then
+  echo "PR_PREFLIGHT_BLOCKED reason=invalid_branch_name branch=$branch expected='<type>/<kebab-case-description>'" >&2
+  exit 9
+fi
+
 pr_query=(gh pr list --repo "$repo" --head "$branch" --state all --limit 100 --json number,state,isDraft,mergedAt,url)
 spent_count="$("${pr_query[@]}" --jq '[.[] | select(.state == "MERGED" or .state == "CLOSED")] | length')"
 ready_count="$("${pr_query[@]}" --jq '[.[] | select(.state == "OPEN" and (.isDraft | not))] | length')"

@@ -14,8 +14,8 @@ Use for “continue,” unfinished status, an unattended heartbeat, or interrupt
 | --- | --- |
 | `build`, `check`, `fix` | Continue or wait for DEV; its replacement result goes only to `REV/PR`. |
 | `review` | Continue or wait for `REV/PR`, which owns the DEV feedback loop. |
-| `pr`, `ci` | Continue or wait for the existing reviewer/publisher; never finalize in the orchestrator. |
-| `done` | Verify the reviewed head matches the internal draft PR head, or verify the external `DRAFT.md`, `.codex-pr-media/title`, and matching `.codex-pr-media/reviewed-head` sidecar all exist; for internal mode, verify CI was inspected. Stop heartbeat and preserve both workers, branch, and worktree. |
+| `pr` | Continue or wait for the existing reviewer/publisher; never finalize in the orchestrator. |
+| `done` | Verify the reviewed head matches the internal draft PR head, or verify the external `DRAFT.md`, `.codex-pr-media/title`, and matching `.codex-pr-media/reviewed-head` sidecar all exist. Stop heartbeat and preserve both workers, branch, and worktree. |
 | `block` | Preserve everything; report the exact decision or authority needed. |
 
 ## Keep It Alive

@@ -34,12 +34,12 @@ For each repo:
    - Trust the orchestrator's just-completed coverage check. Recheck only after a delayed start, an interruption, or a resumed run; if covered, stop unchanged with `ISSUE_SKIPPED issue=<number> reason=covered_by_pr pr=<url>`.
    - For every UI change, add `.codex-pr-media/` to `.git/info/exclude` and capture reproducible before and after media. Use matched videos whenever the change involves interaction, motion, or multiple steps; otherwise use matched images.
    - Return `{ state: "ready_for_review", branch, headSha, checks, media }`. Do not publish a PR.
-   - After the first ready result, stand by without changing the branch until `REV/PR` sends review findings, a CI fix, or the orchestrator sends a requested change.
+   - After the first ready result, stand by without changing the branch until `REV/PR` sends review findings or the orchestrator sends a requested change.
    - After addressing one, send the replacement ready result only to `REV/PR`.
 4. Store and verify the first ready head, then create `REV/PR`, set its static title, and send the issue, DEV task ID, repo, absolute worktree, base, head, checks, and media.
 5. `REV/PR` owns the loop:
    - For each ready head, verify the worktree head, report its accepted head and lifecycle state to the orchestrator, then run `$pr`.
-   - When `$pr` reports findings or failing CI, send the actionable request to `DEV`, report `fix` or `ci` state to the orchestrator, and wait for DEV's replacement ready head.
-   - Repeat until `$pr` publishes successfully, then report the head, PR URL or draft path, and check state to the orchestrator.
-6. After the first ready head, accept lifecycle and head updates only from `REV/PR`. A matching successful publication is terminal when checks are skipped, passing, or pending; report an unfixable failure as blocked.
+   - When `$pr` reports findings, send the actionable request to `DEV`, report `fix` state to the orchestrator, and wait for DEV's replacement ready head.
+   - Repeat until `$pr` publishes successfully, then report the head and PR URL or draft path to the orchestrator.
+6. After the first ready head, accept lifecycle and head updates only from `REV/PR`. A matching successful publication is terminal.
 7. For requested changes after publication, set the lifecycle to `fix` and send the request to `DEV`; its replacement returns only to the same `REV/PR`.

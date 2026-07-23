@@ -40,7 +40,7 @@ The first dev result creates the reviewer/publisher thread. After that, the revi
 
 ## What Codex modifies
 
-For repositories you own, `$solve-issues` may create worktrees, branches, commits, media, and a real draft PR. It runs local checks, reviews the PR, and inspects configured GitHub checks once. It does not create `DRAFT.md`.
+For repositories you own, `$solve-issues` may create worktrees, branches, commits, media, and a real draft PR. It runs local checks and reviews the PR. It does not create `DRAFT.md`.
 
 For external repositories, it may create local worktrees, branches, commits, `DRAFT.md` (PR body draft), and comparison media. It never pushes, opens a PR, or posts any GitHub activity.
 
