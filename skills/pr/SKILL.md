@@ -3,15 +3,11 @@ name: pr
 description: "Review committed changes and publish a maintainer-ready draft PR for the user's repository or a local PR package for an external repository. Use when the user invokes \"$pr\" or asks to draft, create, or open a PR."
 ---
 
-# PR
-
-Use supplied repo, worktree, and branch context; otherwise use the current task's context.
-
 ## Preflight
 
 1. Run the bundled `scripts/pr-preflight` from the target worktree before review and again before publication. Never review or publish while blocked.
 2. Inspect its prospective commits and complete diff for task scope.
-3. If the branch is default or spent, rebuild from the reported base with only intended commits, then rerun preflight. Ask only when scope is ambiguous.
+3. If the branch is default or spent, rebuild from the reported base with only intended commits, then rerun preflight.
 4. If base or head changes, repeat the affected review.
 
 ## Review
@@ -34,7 +30,7 @@ Use supplied repo, worktree, and branch context; otherwise use the current task'
 
 ## Publish
 
-Immediately before publication, verify worktree HEAD equals the reviewed head. If not, restart preflight. Ask only when repository ownership is ambiguous.
+Immediately before publication, verify worktree HEAD equals the reviewed head. If not, restart preflight.
 
 | Mode | Action |
 | --- | --- |
