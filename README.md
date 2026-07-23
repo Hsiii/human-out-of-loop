@@ -36,7 +36,7 @@ Running `$solve-issues` turns the current thread into an orchestrator. It gives 
 
 The dev thread receives the issue, implements and commits, runs checks, and captures before and after media for every UI change—videos whenever interaction, motion, or multiple steps are involved, and images otherwise.
 
-The reviewer/publisher thread runs `$pr`: it reviews the complete diff, returns findings to the dev thread until the head passes, then publishes an internal draft PR or writes an external `DRAFT.md`. Requested changes return to the dev thread and the same reviewer updates the draft after reviewing the new head.
+The first dev result creates the reviewer/publisher thread. After that, the reviewer owns the direct feedback loop with dev, runs `$pr` for each head, and reports lifecycle state to the orchestrator. It publishes an internal draft PR or writes an external `DRAFT.md` after review passes.
 
 ## What Codex modifies
 
