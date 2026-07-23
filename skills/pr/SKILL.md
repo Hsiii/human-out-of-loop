@@ -9,7 +9,7 @@ Use explicitly supplied repository, worktree, and branch context; otherwise use 
 
 ## Publication Preflight
 
-1. Run the bundled `scripts/pr-preflight` with the target worktree as its working directory before review and again before publication. Never publish after `PR_PREFLIGHT_BLOCKED`.
+1. Run the bundled `scripts/pr-preflight` with the target worktree as its working directory before review and again before publication. It requires a `<type>/<kebab-case-description>` branch name. Never publish after `PR_PREFLIGHT_BLOCKED`.
 2. Inspect its prospective commit list and diff for task scope.
 3. For a spent or default branch, rebuild from the reported base with only the intended commits, then rerun preflight. Ask when that scope is ambiguous.
 4. If the reported base or head changes, repeat the affected review. After publication, verify the PR base, head, and commits match the reviewed scope.
@@ -28,4 +28,3 @@ Use explicitly supplied repository, worktree, and branch context; otherwise use 
 5. Immediately before publication, verify the worktree `HEAD` still equals the reviewed head; otherwise publish nothing and return to the preflight. Use internal mode for the user's repositories and external mode otherwise; ask only when ownership is ambiguous:
    - External: write the exact body to `DRAFT.md` with local media references. Store the exact title in `.codex-pr-media/title` and the full reviewed head in `.codex-pr-media/reviewed-head`. Ignore `DRAFT.md` and `.codex-pr-media/` through `.git/info/exclude`, then report the title, absolute draft path, and reviewed head. Never write to GitHub.
    - Internal: push and create or update the branch's draft PR with the same title and body. If its existing PR is not a draft, stop without modifying it. For UI changes, upload media through the GitHub editor, replace only local media references with attachment URLs, and verify no local paths remain. Verify the saved draft PR head equals the reviewed head before reporting success.
-6. For internal mode, inspect checks once and report skipped, passing, pending, or failing without polling.
