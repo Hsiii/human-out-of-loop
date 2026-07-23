@@ -1,0 +1,138 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+  printf 'Usage: %s [--available] --repo OWNER/REPO --pr NUMBER <image-or-video>\n' \
+    "$(basename "$0")" >&2
+  exit 2
+}
+
+native_command="${PR_MEDIA_NATIVE_COMMAND:-pr-media-upload}"
+config_path="${PR_MEDIA_CONFIG:-${XDG_CONFIG_HOME:-"$HOME/.config"}/pr-media/config}"
+upload_url="${PR_MEDIA_UPLOAD_URL:-}"
+upload_token="${PR_MEDIA_UPLOAD_TOKEN:-}"
+available=0
+repo=
+pr_number=
+source_path=
+
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --available)
+      available=1
+      shift
+      ;;
+    --repo)
+      [ "$#" -ge 2 ] || usage
+      repo="$2"
+      shift 2
+      ;;
+    --pr)
+      [ "$#" -ge 2 ] || usage
+      pr_number="$2"
+      shift 2
+      ;;
+    --)
+      shift
+      [ "$#" -eq 1 ] || usage
+      source_path="$1"
+      shift
+      ;;
+    -*)
+      usage
+      ;;
+    *)
+      [ -z "$source_path" ] || usage
+      source_path="$1"
+      shift
+      ;;
+  esac
+done
+
+native_path="$(command -v "$native_command" 2>/dev/null || true)"
+self_path="$(realpath "$0")"
+if [ -n "$native_path" ] && [ "$(realpath "$native_path")" = "$self_path" ]; then
+  native_path=
+fi
+
+if [ -z "$upload_url" ] && [ -z "$upload_token" ] && [ -f "$config_path" ]; then
+  if config_mode="$(stat -f %Lp "$config_path" 2>/dev/null)"; then
+    :
+  else
+    config_mode="$(stat -c %a "$config_path")"
+  fi
+  if (( (8#$config_mode & 077) != 0 )); then
+    printf 'PR media config must not be readable by group or others: %s\n' \
+      "$config_path" >&2
+    exit 1
+  fi
+
+  while IFS='=' read -r key value; do
+    case "$key" in
+      url) upload_url="$value" ;;
+      token) upload_token="$value" ;;
+      "" | \#*) ;;
+      *)
+        printf 'Invalid PR media config key: %s\n' "$key" >&2
+        exit 1
+        ;;
+    esac
+  done <"$config_path"
+fi
+
+remote_available=0
+if command -v curl >/dev/null 2>&1 &&
+  [[ "$upload_url" =~ ^https://[A-Za-z0-9.-]+(:[0-9]{1,5})?/?$ ]] &&
+  [ "${#upload_token}" -ge 32 ] &&
+  [ "${#upload_token}" -le 256 ] &&
+  [[ "$upload_token" =~ ^[A-Za-z0-9_-]+$ ]]; then
+  remote_available=1
+  upload_url="${upload_url%/}"
+fi
+
+if [ "$available" = 1 ]; then
+  [ -z "$repo" ] && [ -z "$pr_number" ] && [ -z "$source_path" ] || usage
+  [ -n "$native_path" ] || [ "$remote_available" = 1 ]
+  exit
+fi
+
+[ -n "$repo" ] && [ -n "$pr_number" ] && [ -n "$source_path" ] || usage
+[[ "$repo" =~ ^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$ ]] || usage
+[[ "$pr_number" =~ ^[1-9][0-9]*$ ]] || usage
+source_path="$(realpath "$source_path")"
+[ -f "$source_path" ] || usage
+extension="$(printf '%s' "${source_path##*.}" | tr '[:upper:]' '[:lower:]')"
+case "$extension" in
+  gif | jpeg | jpg | mp4 | png | webm | webp) ;;
+  *) usage ;;
+esac
+
+if [ -n "$native_path" ]; then
+  exec "$native_path" --repo "$repo" --pr "$pr_number" "$source_path"
+fi
+
+if [ "$remote_available" != 1 ]; then
+  printf 'Configure %s with url= and token=, or use the GitHub editor.\n' \
+    "$config_path" >&2
+  exit 1
+fi
+
+temporary_directory="$(mktemp -d "${TMPDIR:-/tmp}/pr-media-client.XXXXXX")"
+curl_config="$temporary_directory/curl.conf"
+cleanup() {
+  rm -rf -- "$temporary_directory"
+}
+trap cleanup EXIT
+
+umask 077
+printf 'header = "Authorization: Bearer %s"\n' "$upload_token" >"$curl_config"
+curl --config "$curl_config" \
+  --fail-with-body \
+  --silent \
+  --show-error \
+  --request POST \
+  --header "X-PR-Media-Repo: $repo" \
+  --header "X-PR-Media-PR: $pr_number" \
+  --header "X-PR-Media-Filename: upload.$extension" \
+  --data-binary "@$source_path" \
+  "$upload_url/api/upload"
