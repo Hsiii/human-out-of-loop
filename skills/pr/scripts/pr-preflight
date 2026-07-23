@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+branch="${1:-$(git branch --show-current)}"
+current_branch="$(git branch --show-current)"
+
+if [[ -z "$branch" ]]; then
+  echo "PR_PREFLIGHT_BLOCKED reason=detached_head" >&2
+  exit 2
+fi
+
+if [[ "$branch" == "$current_branch" ]] && [[ -n "$(git status --porcelain)" ]]; then
+  echo "PR_PREFLIGHT_BLOCKED reason=dirty_worktree branch=$branch" >&2
+  exit 3
+fi
+
+remote="$(git config "branch.$branch.remote" || true)"
+if [[ -z "$remote" || "$remote" == "." ]]; then
+  remote="origin"
+fi
+
+repo_info="$(gh repo view --json nameWithOwner,defaultBranchRef --jq '[.nameWithOwner, .defaultBranchRef.name] | @tsv')"
+IFS=$'\t' read -r repo default_branch <<< "$repo_info"
+
+git fetch "$remote" "$default_branch" >/dev/null
+base_ref="refs/remotes/$remote/$default_branch"
+base_sha="$(git rev-parse "$base_ref")"
+head_sha="$(git rev-parse "$branch")"
+
+if [[ "$branch" == "$default_branch" ]]; then
+  echo "PR_PREFLIGHT_BLOCKED reason=default_branch branch=$branch base=$base_sha" >&2
+  exit 4
+fi
+
+pr_query=(gh pr list --repo "$repo" --head "$branch" --state all --limit 100 --json number,state,isDraft,mergedAt,url)
+spent_count="$("${pr_query[@]}" --jq '[.[] | select(.state == "MERGED" or .state == "CLOSED")] | length')"
+ready_count="$("${pr_query[@]}" --jq '[.[] | select(.state == "OPEN" and (.isDraft | not))] | length')"
+draft_count="$("${pr_query[@]}" --jq '[.[] | select(.state == "OPEN" and .isDraft)] | length')"
+
+if (( spent_count > 0 )); then
+  echo "PR_PREFLIGHT_BLOCKED reason=spent_branch branch=$branch completed_prs=$spent_count" >&2
+  exit 5
+fi
+
+if (( ready_count > 0 )); then
+  echo "PR_PREFLIGHT_BLOCKED reason=non_draft_pr branch=$branch open_prs=$ready_count" >&2
+  exit 6
+fi
+
+if (( draft_count > 1 )); then
+  echo "PR_PREFLIGHT_BLOCKED reason=ambiguous_drafts branch=$branch open_drafts=$draft_count" >&2
+  exit 7
+fi
+
+commit_count="$(git rev-list --count "$base_ref..$head_sha")"
+if (( commit_count == 0 )); then
+  echo "PR_PREFLIGHT_BLOCKED reason=no_commits branch=$branch base=$base_sha head=$head_sha" >&2
+  exit 8
+fi
+
+echo "PR_PREFLIGHT_OK repo=$repo remote=$remote base_branch=$default_branch base=$base_sha branch=$branch head=$head_sha commits=$commit_count drafts=$draft_count"
+git log --oneline "$base_ref..$head_sha"
