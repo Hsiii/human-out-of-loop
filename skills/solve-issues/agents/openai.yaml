@@ -1,4 +1,4 @@
 interface:
   display_name: "Solve Issues"
-  short_description: "Run exact or picked issue-to-review loops"
-  default_prompt: "Use $solve-issues to process one eligible open issue end-to-end."
+  short_description: "Orchestrate issue-to-draft-PR loops"
+  default_prompt: "Use $solve-issues to process one eligible open issue through implementation, review, and draft publication."

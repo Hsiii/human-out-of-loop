@@ -1,4 +1,4 @@
 interface:
   display_name: "PR"
-  short_description: "Internal draft PR or external local draft"
-  default_prompt: "Use $pr to create the appropriate draft for this repository."
+  short_description: "Review and publish draft PR packages"
+  default_prompt: "Use $pr to review the finished work and publish the appropriate draft."
