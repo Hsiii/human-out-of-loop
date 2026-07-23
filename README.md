@@ -29,4 +29,6 @@ The skills may create branches, worktrees, commits, and comparison media. They n
 
 ## Automation
 
-Ask Codex to run `$solve-issues pick [amount]` on a schedule across the Git repositories in a workspace.
+Ask Codex to create an automation that runs `$solve-issues pick [amount]` for each Git repository in a workspace, then choose the schedule and workspace folder.
+
+I use [Hsiii/fish-alias](https://github.com/Hsiii/fish-alias) to collect suitable ongoing projects into one directory with symlinks.
