@@ -5,28 +5,42 @@ description: "Review committed changes and publish a maintainer-ready draft PR f
 
 # PR
 
-Use explicitly supplied repository, worktree, and branch context; otherwise use the current thread's.
+Use supplied repo, worktree, and branch context; otherwise use the current task's context.
 
-## Publication Preflight
+## Preflight
 
-1. Run the bundled `scripts/pr-preflight` with the target worktree as its working directory before review and again before publication. It requires a `<type>/<kebab-case-description>` branch name. Never publish after `PR_PREFLIGHT_BLOCKED`.
-2. Inspect its prospective commit list and diff for task scope.
-3. For a spent or default branch, rebuild from the reported base with only the intended commits, then rerun preflight. Ask when that scope is ambiguous.
-4. If the reported base or head changes, repeat the affected review. After publication, verify the PR base, head, and commits match the reviewed scope.
+1. Run the bundled `scripts/pr-preflight` from the target worktree before review and again before publication. Never review or publish while blocked.
+2. Inspect its prospective commits and complete diff for task scope.
+3. If the branch is default or spent, rebuild from the reported base with only intended commits, then rerun preflight. Ask only when scope is ambiguous.
+4. If base or head changes, repeat the affected review.
 
-## Review and Publication
+## Review
 
-1. Use the preflight base and head. Verify the worktree head before each review.
-2. Review the complete `base...head` diff. On actionable findings, report them and stop.
-3. For every UI change, reuse supplied media or capture reproducible before and after media from the base and head. Use matched videos whenever the change involves interaction, motion, or multiple steps; otherwise use matched images. Keep media untracked through `.git/info/exclude`, match viewport, state, data, and action sequence, and never publish with either side missing.
-4. Build one PR package:
-   - Use the repository PR template exactly when present.
-   - Title it `<type>(<scope>): <imperative summary>` with the narrowest Conventional Commits type. Omit scope when none is useful and reserve `style` for formatting-only changes.
-   - When the change resolves an issue, put issue-closing syntax in the body.
-   - Do not invent template sections or include generic command output.
-   - For UI changes, put `Before:` and `After:` media under the best template heading. Without a template, use concise `## Description` and optional `## Comparison` sections.
-5. Immediately before publication, verify the worktree `HEAD` still equals the reviewed head; otherwise publish nothing and return to the preflight. Use internal mode for the user's repositories and external mode otherwise; ask only when ownership is ambiguous:
-   - External: write the exact body to `DRAFT.md` with local media references. Store the exact title in `.codex-pr-media/title` and the full reviewed head in `.codex-pr-media/reviewed-head`. Ignore `DRAFT.md` and `.codex-pr-media/` through `.git/info/exclude`, then report the title, absolute draft path, and reviewed head. Never write to GitHub.
-   - Internal: push and create or update the branch's draft PR with the same title and body. If its existing PR is not a draft, stop without modifying it. For UI changes, upload media through the GitHub editor, replace only local media references with attachment URLs, and verify no local paths remain. Verify the saved draft PR head equals the reviewed head before reporting success.
+1. Use the preflight base and head; verify worktree HEAD before each review.
+2. Review the complete `base...head` diff. Report actionable findings and stop.
+3. For every UI change, reuse supplied media or capture matched, reproducible before/after media from base and head:
+   - Use video for interaction, motion, or multiple steps; images otherwise.
+   - Match viewport, state, data, and action sequence.
+   - Keep media untracked through `.git/info/exclude`.
+   - Never publish with either side missing.
+
+## Package
+
+- Use the repository PR template exactly when present.
+- Title: `<type>(<scope>): <imperative summary>` using the narrowest Conventional Commits type. Omit an unhelpful scope; reserve `style` for formatting-only changes.
+- Add issue-closing syntax when the change resolves an issue.
+- Do not invent template sections or include generic command output.
+- Put UI `Before:` and `After:` media under the best template heading. Without a template, use concise `## Description` and optional `## Comparison`.
+
+## Publish
+
+Immediately before publication, verify worktree HEAD equals the reviewed head. If not, restart preflight. Ask only when repository ownership is ambiguous.
+
+| Mode | Action |
+| --- | --- |
+| External repository | Write the exact body with local media references to `DRAFT.md`; write the exact title to `.codex-pr-media/title` and full reviewed head to `.codex-pr-media/reviewed-head`; ignore both paths through `.git/info/exclude`; report title, absolute draft path, and reviewed head. Never write to GitHub. |
+| User-owned repository | Push and create or update the branch's draft PR with the same title and body. Stop without modification if its existing PR is not a draft. For UI changes, upload media through the GitHub editor, replace only local media references with attachment URLs, and verify no local paths remain. |
+
+For a user-owned repository, verify the saved draft PR's base, head, and commits match the reviewed scope.
 
 Only create or update drafts. Never mark ready, merge, request reviewers, enable auto-merge, or post GitHub review activity.
