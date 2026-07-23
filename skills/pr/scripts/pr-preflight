@@ -9,9 +9,11 @@ if [[ -z "$branch" ]]; then
   exit 2
 fi
 
-if [[ "$branch" == "$current_branch" ]] && [[ -n "$(git status --porcelain)" ]]; then
-  echo "PR_PREFLIGHT_BLOCKED reason=dirty_worktree branch=$branch" >&2
-  exit 3
+if [[ "$branch" == "$current_branch" ]]; then
+  if ! git diff --quiet || ! git diff --cached --quiet; then
+    echo "PR_PREFLIGHT_BLOCKED reason=tracked_changes branch=$branch" >&2
+    exit 3
+  fi
 fi
 
 remote="$(git config "branch.$branch.remote" || true)"
