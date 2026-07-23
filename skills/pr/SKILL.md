@@ -32,10 +32,12 @@ description: "Review committed changes and publish a maintainer-ready draft PR f
 
 Immediately before publication, verify worktree HEAD equals the reviewed head. If not, restart preflight.
 
+For user-owned repository UI changes, prefer `pr-media-upload --repo OWNER/REPO --pr NUMBER <file>` when available; otherwise use the GitHub editor. Replace only local media references with the returned Markdown or attachment URLs, and verify no local paths remain.
+
 | Mode | Action |
 | --- | --- |
 | External repository | Write the exact body with local media references to `DRAFT.md`; write the exact title to `.codex-pr-media/title` and full reviewed head to `.codex-pr-media/reviewed-head`; ignore both paths through `.git/info/exclude`; report title, absolute draft path, and reviewed head. Never write to GitHub. |
-| User-owned repository | Push and create or update the branch's draft PR with the same title and body. Stop without modification if its existing PR is not a draft. For UI changes, prefer `pr-media-upload --repo OWNER/REPO --pr NUMBER <file>` when available and replace local references with its returned Markdown; otherwise use the GitHub editor. Verify no local paths remain. |
+| User-owned repository | Push and create or update the branch's draft PR with the same title and body. Stop without modification if its existing PR is not a draft. |
 
 For a user-owned repository, verify the saved draft PR's base, head, and commits match the reviewed scope.
 
