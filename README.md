@@ -17,6 +17,7 @@ Ask Codex to install the skills from `Hsiii/human-out-of-loop`.
 - `$pr`
   - For your own repos, opens a polished draft PR.
   - For external repos, drafts it in a local `DRAFT.md`.
+  - Fetches the current remote base and refuses branches already used by a closed or merged PR.
 - `$solve-issues`
   - Picks eligible open issues without an existing solving PR, implements minimal solutions, reviews them independently, and creates draft PRs.
 
