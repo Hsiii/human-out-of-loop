@@ -1,27 +1,17 @@
 ---
 name: pr
-description: "Create a maintainer-ready draft PR for the user's repo, or a reviewed local PR draft for an external repo. Uses the repository template, conventional title, issue closure, full-diff review, comparison media, and ownership-based publishing. Use when the user says \"pr\", asks to draft or create a PR, or an implementation task hands off PR preparation."
+description: "Review the current committed changes and create a maintainer-ready draft PR for the user's repository or a local DRAFT.md for an external repository. Use when the user invokes \"$pr\" or asks to draft, create, or open a PR for the current branch."
 ---
 
 # PR
 
-When `$solve-issues` calls this skill, use its supplied mode, repo, base, branch, worktree, artifact paths, and review result. In prepare mode, draft only and return for the separate reviewer; in publish mode, require that review's exact current-head pass.
+1. Use the current repository, worktree, and branch. Derive the base from the remote default branch and choose internal for the user's repos or external otherwise; ask only when ownership is ambiguous.
+2. Inspect the complete base-to-head diff, commits, linked issue, repository instructions, and working-tree state. Require intended changes to be committed; never stage or commit unrelated changes.
+3. Run relevant checks. For a user-facing change, ignore `.codex-pr-media/` through `.git/info/exclude` before capturing comparison media.
+4. Review the complete base-to-head diff read-only. On findings, report them and stop before drafting or publication.
+5. Use the repository's PR template exactly when present. Title the PR `<type>(<scope>): <imperative summary>` with the narrowest Conventional Commits type; omit scope only when none is useful and reserve `style` for formatting-only changes. Include issue-closing syntax. Do not invent sections or generic command output.
+6. For user-facing changes, include `Before:` and `After:` under the best template heading. Use captured media when available; when only after media exists, describe the prior state. Without a template, use concise `## Description` and optional `## Comparison` sections.
+7. External: write `DRAFT.md`, ignore it through `.git/info/exclude`, report its path and head, and stop without GitHub writes.
+8. Internal: do not create `DRAFT.md`. Push and open a real draft PR, upload media in the GitHub editor, and verify the saved body contains GitHub attachment URLs and no local paths. Inspect checks once; report the verified URL, head, and check state without polling pending checks unless asked.
 
-When called directly:
-
-1. Use the current repository, worktree, and branch; derive the base from the remote default branch and artifact paths from the worktree. Choose internal for the user's repos and external otherwise; ask only when ownership is ambiguous.
-2. Inspect the complete base-to-head diff, commits, linked issue, repository instructions, and working-tree state. Require the intended PR changes to be committed before publication. Never stage or commit unrelated changes; ask if intended changes remain uncommitted.
-3. Run relevant local checks, capture comparison media for user-facing changes, and prepare `DRAFT.md` with the framework below.
-4. Review the complete base-to-head diff read-only. If it has findings, report them and stop with the local draft. Otherwise treat the current head as the direct call's review pass.
-
-Use the repository's PR template exactly when present. Title the PR `<type>(<scope>): <imperative summary>` with the narrowest meaningful Conventional Commits type and scope; omit scope only when none is useful, and reserve `style` for formatting-only changes rather than CSS or behavior. Include appropriate issue-closing syntax. Do not invent sections or add generic local command output unless the template requests it.
-
-For user-facing changes, include clearly labeled `Before:` and `After:` states under the best template heading. Use captured media when available; when only after media exists, describe the prior state in text. Without a template, write a concise `## Description` and add `## Comparison` only for user-facing changes.
-
-Prepare `DRAFT.md` for both modes, ignoring `DRAFT.md`, `REVIEW.md`, and `.codex-pr-media/` through `.git/info/exclude`. In orchestrated prepare mode, return `{ state: "prepared", draftPath, branch, headSha, media }` for review.
-
-External: stop after the reviewed local draft. Never push, open a PR, or post GitHub review activity.
-
-Internal: after checks and a review pass covering the whole base-to-current-head diff, use available authenticated Git and GitHub tooling to push and open a real draft PR. GitHub Yeet is optional, not required. Upload media in the GitHub editor and verify the saved body contains GitHub attachment URLs and no local paths. Never mark ready, merge, request reviewers, or enable auto-merge. In direct mode, inspect checks after publication: skip when none are configured, otherwise wait for green and report failures without editing implementation code. Return `{ state: "published", prUrl, branch, headSha, media }` after verifying the URL and body.
-
-Keep review communication inside Codex. In direct mode, report findings to the user and stop before publication; otherwise publish after the local pass. In orchestrated mode, the reviewer sends findings or the exact current-head pass marker to the developer task, and the caller owns CI monitoring and final-head review. Never post a GitHub review, review comment, reaction, or approval.
+Never mark ready, merge, request reviewers, enable auto-merge, or post a GitHub review, review comment, reaction, or approval.
