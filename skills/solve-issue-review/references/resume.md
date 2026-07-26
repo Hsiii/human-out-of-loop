@@ -1,4 +1,4 @@
-Do not parse continuation as a `$solve-issues` parameter.
+Do not parse continuation as a `$solve-issue-review` parameter.
 
 ## Recover
 
