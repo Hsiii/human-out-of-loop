@@ -15,15 +15,19 @@ Ask Codex:
 | Goal | Prompt |
 | --- | --- |
 | Create a draft PR | `$pr` |
-| Solve issue #65 | `$solve-issues 65` |
-| Solve five issues in parallel | `$solve-issues pick 5` |
-| Solve five issues sequentially | `$solve-issues pick 5, one by one` |
+| Solve issue #65 | `$solve-issue #65` |
+| Solve five issues in parallel | `$solve-issue 5` |
+| Solve and independently review issue #65 | `$solve-issue-review 65` |
+| Solve and independently review five issues | `$solve-issue-review pick 5` |
 
 ## What to expect
 
 `$pr` reviews committed changes and prepares a draft PR. For external repositories, it creates a local `DRAFT.md` instead.
 
-`$solve-issues` implements and reviews issues in isolated branches and worktrees, then runs `$pr` for each solution.
+`$solve-issue` gives each issue one task that implements it and runs `$pr`.
+
+`$solve-issue-review` keeps the full workflow: separate developer and reviewer
+tasks in isolated branches and worktrees, with `$pr` publication after review.
 
 The skills may create branches, worktrees, commits, and comparison media. They never merge or mark a PR ready.
 
@@ -58,6 +62,6 @@ Without that configuration, the skill uses GitHub's media uploader.
 
 ## Automation
 
-Ask Codex to create an automation that runs `$solve-issues pick [amount]` for each Git repository in a workspace, then choose the schedule and workspace folder.
+Ask Codex to create an automation that runs `$solve-issue [amount]` for each Git repository in a workspace, then choose the schedule and workspace folder.
 
 I use [Hsiii/fish-alias](https://github.com/Hsiii/fish-alias) to collect suitable ongoing projects into one directory with symlinks.

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Solve Issue Review"
+  short_description: "Orchestrate independently reviewed issue PRs"
+  default_prompt: "Use $solve-issue-review to process one eligible open issue through implementation, independent review, and draft publication."

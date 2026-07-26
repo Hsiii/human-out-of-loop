@@ -1,0 +1,4 @@
+interface:
+  display_name: "Solve Issue"
+  short_description: "Solve issues directly and publish draft PRs"
+  default_prompt: "Use $solve-issue #123 to solve one exact issue and publish it with $pr."

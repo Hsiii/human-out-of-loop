@@ -1,13 +1,13 @@
 ---
-name: solve-issues
+name: solve-issue-review
 description: "Turn exact or picked GitHub issues into independently reviewed draft PRs or local packages using isolated Ponytail developers and reviewers. Use for issue-to-PR runs, picked batches, or continuation; batches default to parallel."
 ---
 
 ## Select
 
-- `$solve-issues`: select one eligible issue.
-- `$solve-issues <positive-issue-number>`: select that issue only; never substitute another.
-- `$solve-issues pick [positive-amount]`: select distinct issues in ascending order; default to `1`, or use all remaining when fewer qualify.
+- `$solve-issue-review`: select one eligible issue.
+- `$solve-issue-review <positive-issue-number>`: select that issue only; never substitute another.
+- `$solve-issue-review pick [positive-amount]`: select distinct issues in ascending order; default to `1`, or use all remaining when fewer qualify.
 - Dispatch batches immediately in parallel unless the user requests sequential execution; then finish each issue before dispatching the next.
 
 Eligible: open, with no open or draft PR covering it through a GitHub Development link or closing keyword. Ignore incidental mentions.
