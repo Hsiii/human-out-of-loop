@@ -27,6 +27,18 @@ Ask Codex:
 
 The skills may create branches, worktrees, commits, and comparison media. They never merge or mark a PR ready.
 
+### Follow up on a PR
+
+If a produced PR needs changes, reply in the original **Solve #…** or
+**Solve N issues** task—not the developer or reviewer task. The original task
+routes the change through the existing developer and reviewer, then updates the
+same draft PR.
+
+For example:
+
+> PR #123 has an issue with the empty state. Fix it, review the new commit, and
+> update the draft PR.
+
 ## Optional PR media
 
 The PR skill can publish images and videos through a compatible self-hosted
