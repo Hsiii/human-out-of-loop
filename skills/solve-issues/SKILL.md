@@ -25,6 +25,8 @@ ISSUE_SKIPPED issue=<number> reason=covered_by_pr pr=<url>
 - Give each issue one sidebar-visible `DEV` in an isolated worktree and one independent, source-read-only `REV`, created only after `DEV` produces a committed head.
 - Use no neutral seed, transient subagent, Ponytail-enabled `REV`, or `REV` forked from `DEV`.
 - Keep review feedback inside Codex tasks; never post GitHub review activity.
+- Treat active workers as black boxes. ORCH routes lifecycle state; it never repeats or independently interprets worker diagnosis, design, implementation, or validation commentary.
+- ORCH reports only selection/dispatch, an accepted ready head, review/fix transitions, publication, skip, or blocker. Worker tasks own detailed progress narration.
 - Call `set_thread_title` once per task and never change it:
   - Orchestrator: `Solve #<issue>` or `Solve <amount> issues`
   - Developer: `#<issue>: <short-description>`
@@ -39,14 +41,17 @@ ISSUE_SKIPPED issue=<number> reason=covered_by_pr pr=<url>
    - Activate `$ponytail` at full intensity.
    - Trust ORCH's coverage check. Recheck only after delay, interruption, or resumption; if covered, stop unchanged with `ISSUE_SKIPPED issue=<number> reason=covered_by_pr pr=<url>`.
    - For UI changes, exclude `.codex-pr-media/` through `.git/info/exclude` and capture matched, reproducible before/after media: video for interaction, motion, or multiple steps; images otherwise.
-   - Implement, commit, check, and return `{ state: "ready_for_review", branch, headSha, checks, media }`; never publish.
+   - Implement, commit, and check. Before readiness, restore only agent-generated artifacts outside the commit and require a clean worktree except ignored media.
+   - Return `{ state: "ready_for_review", branch, headSha, checks, media, cleanWorktree: true }`; never publish.
    - Leave the branch unchanged after readiness. Send replacement results only to REV.
-4. Store and verify DEV's first ready head. Create `REV` with issue, DEV task ID, repo, worktree, base, head, checks, and media.
+4. Verify DEV's first ready head equals worktree `HEAD` and the worktree is clean except ignored media. If either check fails, send DEV one narrow correction and wait for a replacement result. Otherwise store the result and create `REV` with issue, DEV task ID, repo, worktree, base, head, checks, and media.
 5. REV owns the loop:
-   - Verify each head; report accepted head and lifecycle state to ORCH; run `$pr`.
-   - On findings, send them to DEV, report `fix` to ORCH, and wait for DEV's replacement head.
-   - Repeat until publication; report the published head and PR URL or draft path to ORCH.
+   - Verify each head, run `$pr`, and send ORCH lifecycle milestones only; never relay intermediate technical commentary.
+   - On findings, send the technical details only to DEV, report `fix` to ORCH, and wait for DEV's replacement head.
+   - Repeat until publication; report only the published head and PR URL or draft path to ORCH.
 6. After the first ready head, accept head and lifecycle updates only from REV. Matching publication is terminal. For later user-requested changes, set `fix`, send the request to DEV, and route DEV's replacement head to the same REV.
+
+While a worker is active, preserve its `wait_threads` cursor and wait again. Commentary updates, tool activity, and timeouts are not reasons to inspect the worker with `read_thread`, summarize its progress, or send a status probe. Contact a worker only for its explicit request or blocker, a malformed completed result, a failed readiness invariant, or a user-requested scope change.
 
 ## Continue
 
