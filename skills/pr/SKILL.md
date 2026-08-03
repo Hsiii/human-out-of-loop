@@ -6,7 +6,7 @@ description: "Review committed changes and publish a maintainer-ready draft PR i
 ## Preflight
 
 1. Treat the current repository as the sole publication target. Never discover, create, synchronize, or publish to another repository. Require authenticated write access; otherwise stop and ask the user to run from a writable fork or repository.
-2. Run the bundled `scripts/pr-preflight` from the target worktree before review and again before publication. Never review or publish while blocked.
+2. Run the bundled `bash scripts/pr-preflight` from the target worktree before review and again before publication. Never review or publish while blocked.
 3. Inspect its prospective commits and complete diff for task scope.
 4. If the branch is default or spent, rebuild from the reported base with only intended commits, then rerun preflight.
 5. If base or head changes, repeat the affected review.
@@ -33,7 +33,7 @@ description: "Review committed changes and publish a maintainer-ready draft PR i
 
 Immediately before publication, verify worktree HEAD equals the reviewed head. If not, restart preflight.
 
-For UI changes, run the bundled `scripts/pr-media-upload --available`. When it succeeds, publish each file with `scripts/pr-media-upload --repo OWNER/REPO --pr NUMBER <file>`; otherwise use the GitHub editor. Replace only local media references with the returned Markdown or attachment URLs, and verify no local paths remain.
+For UI changes, run the bundled `bash scripts/pr-media-upload --available`. When it succeeds, publish each file with `bash scripts/pr-media-upload --repo OWNER/REPO --pr NUMBER <file>`; otherwise use the GitHub editor. Replace only local media references with the returned Markdown or attachment URLs, and verify no local paths remain.
 
 Push and create or update the branch's draft PR against the current repository's default branch with the packaged title and body. Stop without modification if its existing PR is not a draft. Verify the saved draft PR's repository, base, head, and commits match the reviewed scope.
 
