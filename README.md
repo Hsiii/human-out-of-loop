@@ -22,7 +22,7 @@ Ask Codex:
 
 ## What to expect
 
-`$pr` reviews committed changes and publishes a draft PR in the current repository. For an external contribution, run it from your writable fork; it never follows or publishes to another repository.
+`$pr` reviews committed changes and publishes a draft PR in the current branch's writable remote repository. For an external contribution, make the branch track your fork remote; `$pr` pins every GitHub command to that fork and never follows the parent/upstream repository.
 
 `$solve-issue` gives each issue one task that implements it and runs `$pr`.
 

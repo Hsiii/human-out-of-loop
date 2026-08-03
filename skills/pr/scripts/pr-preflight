@@ -21,8 +21,25 @@ if [[ -z "$remote" || "$remote" == "." ]]; then
   remote="origin"
 fi
 
-repo_info="$(gh repo view --json nameWithOwner,defaultBranchRef --jq '[.nameWithOwner, .defaultBranchRef.name] | @tsv')"
-IFS=$'\t' read -r repo default_branch <<< "$repo_info"
+remote_url="$(git remote get-url "$remote" || true)"
+if [[ -z "$remote_url" ]]; then
+  echo "PR_PREFLIGHT_BLOCKED reason=missing_remote branch=$branch remote=$remote" >&2
+  exit 10
+fi
+
+if ! repo_info="$(gh repo view "$remote_url" --json nameWithOwner,defaultBranchRef,viewerPermission --jq '[.nameWithOwner, .defaultBranchRef.name, .viewerPermission] | @tsv')"; then
+  echo "PR_PREFLIGHT_BLOCKED reason=unresolved_remote branch=$branch remote=$remote url=$remote_url" >&2
+  exit 11
+fi
+IFS=$'\t' read -r repo default_branch viewer_permission <<< "$repo_info"
+
+case "$viewer_permission" in
+  ADMIN | MAINTAIN | WRITE) ;;
+  *)
+    echo "PR_PREFLIGHT_BLOCKED reason=repository_not_writable repo=$repo remote=$remote permission=$viewer_permission" >&2
+    exit 12
+    ;;
+esac
 
 git fetch "$remote" "$default_branch" >/dev/null
 base_ref="refs/remotes/$remote/$default_branch"
