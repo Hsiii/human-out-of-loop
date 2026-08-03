@@ -21,7 +21,7 @@ ISSUE_SKIPPED issue=<number> reason=covered_by_pr pr=<url>
 
 ## Invariants
 
-- Let `$pr` publish the draft PR in the current repository; never select or pass a publication mode.
+- Let `$pr` publish the draft PR in the current branch's writable remote repository; never select or pass a publication mode.
 - Give each issue one sidebar-visible `DEV` in an isolated worktree and one independent, source-read-only `REV`, created only after `DEV` produces a committed head.
 - Use no neutral seed, transient subagent, Ponytail-enabled `REV`, or `REV` forked from `DEV`.
 - Keep review feedback inside Codex tasks; never post GitHub review activity.
