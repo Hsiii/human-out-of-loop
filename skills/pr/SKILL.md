@@ -1,14 +1,15 @@
 ---
 name: pr
-description: "Review committed changes and publish a maintainer-ready draft PR for the user's repository or a local PR package for an external repository. Use when the user invokes \"$pr\" or asks to draft, create, or open a PR."
+description: "Review committed changes and publish a maintainer-ready draft PR in the current repository. Use when the user invokes \"$pr\" or asks to draft, create, or open a PR."
 ---
 
 ## Preflight
 
-1. Run the bundled `scripts/pr-preflight` from the target worktree before review and again before publication. Never review or publish while blocked.
-2. Inspect its prospective commits and complete diff for task scope.
-3. If the branch is default or spent, rebuild from the reported base with only intended commits, then rerun preflight.
-4. If base or head changes, repeat the affected review.
+1. Treat the current repository as the sole publication target. Never discover, create, synchronize, or publish to another repository. Require authenticated write access; otherwise stop and ask the user to run from a writable fork or repository.
+2. Run the bundled `scripts/pr-preflight` from the target worktree before review and again before publication. Never review or publish while blocked.
+3. Inspect its prospective commits and complete diff for task scope.
+4. If the branch is default or spent, rebuild from the reported base with only intended commits, then rerun preflight.
+5. If base or head changes, repeat the affected review.
 
 ## Review
 
@@ -32,13 +33,8 @@ description: "Review committed changes and publish a maintainer-ready draft PR f
 
 Immediately before publication, verify worktree HEAD equals the reviewed head. If not, restart preflight.
 
-For user-owned repository UI changes, run the bundled `scripts/pr-media-upload --available`. When it succeeds, publish each file with `scripts/pr-media-upload --repo OWNER/REPO --pr NUMBER <file>`; otherwise use the GitHub editor. Replace only local media references with the returned Markdown or attachment URLs, and verify no local paths remain.
+For UI changes, run the bundled `scripts/pr-media-upload --available`. When it succeeds, publish each file with `scripts/pr-media-upload --repo OWNER/REPO --pr NUMBER <file>`; otherwise use the GitHub editor. Replace only local media references with the returned Markdown or attachment URLs, and verify no local paths remain.
 
-| Mode | Action |
-| --- | --- |
-| External repository | Write the exact body with local media references to `DRAFT.md`; write the exact title to `.codex-pr-media/title` and full reviewed head to `.codex-pr-media/reviewed-head`; ignore both paths through `.git/info/exclude`; report title, absolute draft path, and reviewed head. Never write to GitHub. |
-| User-owned repository | Push and create or update the branch's draft PR with the same title and body. Stop without modification if its existing PR is not a draft. |
-
-For a user-owned repository, verify the saved draft PR's base, head, and commits match the reviewed scope.
+Push and create or update the branch's draft PR against the current repository's default branch with the packaged title and body. Stop without modification if its existing PR is not a draft. Verify the saved draft PR's repository, base, head, and commits match the reviewed scope.
 
 Only create or update drafts. Never mark ready, merge, request reviewers, enable auto-merge, or post GitHub review activity.
