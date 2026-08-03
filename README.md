@@ -45,9 +45,13 @@ For example:
 
 ## Optional PR media
 
-The PR skill can publish images and videos through a compatible self-hosted
-media service. Ask its operator for a two-line configuration, save it at
-`~/.config/pr-media/config`, and make it readable only by your user:
+For UI changes, `$pr` adds matched before-and-after images or videos. Without a
+configured media service, Codex falls back to GitHub's editor and uses Computer
+Use to attach each file. That works, but takes more time and tokens.
+
+The optional media service lets Codex upload files directly and insert their
+Markdown into the PR body. Ask its operator for a two-line configuration, save
+it at `~/.config/pr-media/config`, and make it readable only by your user:
 
 ```text
 url=https://media.example.com
@@ -58,7 +62,12 @@ token=replace-with-your-token
 chmod 600 ~/.config/pr-media/config
 ```
 
-Without that configuration, the skill uses GitHub's media uploader.
+Media hosted by this service is temporary and may expire. To preserve it on a
+long-lived PR, open the draft before it expires, copy the rendered image from
+the PR body, edit the body on GitHub, and paste it back into the editor. GitHub
+will upload its own copy; replace the temporary Markdown with the new GitHub
+attachment. For video, download the file and upload it through the editor
+instead.
 
 ## Automation
 
