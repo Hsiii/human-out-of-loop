@@ -1,6 +1,6 @@
 ---
 name: solve-issue-review
-description: "Turn exact or picked GitHub issues into independently reviewed draft PRs or local packages using isolated Ponytail developers and reviewers. Use for issue-to-PR runs, picked batches, or continuation; batches default to parallel."
+description: "Turn exact or picked GitHub issues into independently reviewed draft PRs using isolated Ponytail developers and reviewers. Use for issue-to-PR runs, picked batches, or continuation; batches default to parallel."
 ---
 
 ## Select
@@ -21,7 +21,7 @@ ISSUE_SKIPPED issue=<number> reason=covered_by_pr pr=<url>
 
 ## Invariants
 
-- Let `$pr` choose draft-PR versus local-package publication; never store or pass that mode.
+- Let `$pr` publish the draft PR in the current repository; never select or pass a publication mode.
 - Give each issue one sidebar-visible `DEV` in an isolated worktree and one independent, source-read-only `REV`, created only after `DEV` produces a committed head.
 - Use no neutral seed, transient subagent, Ponytail-enabled `REV`, or `REV` forked from `DEV`.
 - Keep review feedback inside Codex tasks; never post GitHub review activity.
@@ -31,7 +31,7 @@ ISSUE_SKIPPED issue=<number> reason=covered_by_pr pr=<url>
   - Orchestrator: `Solve #<issue>` or `Solve <amount> issues`
   - Developer: `#<issue>: <short-description>`
   - Reviewer: `Review #<issue>`
-- Key each run record by repo + issue. Store DEV/REV task IDs and cursors, absolute worktree, accepted head, PR URL or draft path, and lifecycle state.
+- Key each run record by repo + issue. Store DEV/REV task IDs and cursors, absolute worktree, accepted head, PR URL, and lifecycle state.
 
 ## Run
 
@@ -48,7 +48,7 @@ ISSUE_SKIPPED issue=<number> reason=covered_by_pr pr=<url>
 5. REV owns the loop:
    - Verify each head, run `$pr`, and send ORCH lifecycle milestones only; never relay intermediate technical commentary.
    - On findings, send the technical details only to DEV, report `fix` to ORCH, and wait for DEV's replacement head.
-   - Repeat until publication; report only the published head and PR URL or draft path to ORCH.
+   - Repeat until publication; report only the published head and PR URL to ORCH.
 6. After the first ready head, accept head and lifecycle updates only from REV. Matching publication is terminal. For later user-requested changes, set `fix`, send the request to DEV, and route DEV's replacement head to the same REV.
 
 While a worker is active, preserve its `wait_threads` cursor and wait again. Commentary updates, tool activity, and timeouts are not reasons to inspect the worker with `read_thread`, summarize its progress, or send a status probe. Contact a worker only for its explicit request or blocker, a malformed completed result, a failed readiness invariant, or a user-requested scope change.

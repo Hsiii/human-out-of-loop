@@ -22,7 +22,7 @@ Ask Codex:
 
 ## What to expect
 
-`$pr` reviews committed changes and prepares a draft PR. For external repositories, it creates a local `DRAFT.md` instead.
+`$pr` reviews committed changes and publishes a draft PR in the current repository. For an external contribution, run it from your writable fork; it never follows or publishes to another repository.
 
 `$solve-issue` gives each issue one task that implements it and runs `$pr`.
 
