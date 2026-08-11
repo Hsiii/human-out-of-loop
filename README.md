@@ -62,6 +62,11 @@ token=replace-with-your-token
 chmod 600 ~/.config/pr-media/config
 ```
 
+When supported by the configured service, uploading a short video returns a GIF
+preview for inline review followed by a link to the full-quality recording. The
+skill uses that response directly and does not generate a duplicate preview on
+the client.
+
 Media hosted by this service is temporary and may expire. To preserve it on a
 long-lived PR, open the draft before it expires, copy the rendered image from
 the PR body, edit the body on GitHub, and paste it back into the editor. GitHub

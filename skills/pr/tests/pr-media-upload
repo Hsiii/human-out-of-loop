@@ -21,13 +21,19 @@ printf '%s' \
 printf '%s\n' \
   '#!/bin/sh' \
   'case " $* " in *test-token-*) exit 1 ;; esac' \
+  'arguments="$*"' \
   'config=' \
   'while [ "$#" -gt 0 ]; do' \
   '  if [ "$1" = "--config" ]; then config="$2"; shift 2; continue; fi' \
   '  shift' \
   'done' \
   'grep -Fq "Authorization: Bearer test-token-" "$config"' \
-  'printf "![PR preview](https://media.example.test/test.png)\\n"' \
+  'case " $arguments " in' \
+  '  *"X-PR-Media-Filename: upload.mp4"*)' \
+  '    printf "![PR video preview](https://media.example.test/preview.gif)<br>[PR demo video](https://media.example.test/video.mp4)\\n"' \
+  '    ;;' \
+  '  *) printf "![PR preview](https://media.example.test/test.png)\\n" ;;' \
+  'esac' \
   >"$work_dir/bin/curl"
 chmod +x "$work_dir/bin/curl"
 
@@ -41,6 +47,16 @@ output="$(
 )"
 [ "$output" = \
   '![PR preview](https://media.example.test/test.png)' ]
+
+video_file="$work_dir/preview.mp4"
+printf 'video' >"$video_file"
+video_output="$(
+  PATH="$work_dir/bin:/usr/bin:/bin" \
+  XDG_CONFIG_HOME="$work_dir/config" \
+    "$uploader" --repo Hsiii/example --pr 42 "$video_file"
+)"
+[ "$video_output" = \
+  '![PR video preview](https://media.example.test/preview.gif)<br>[PR demo video](https://media.example.test/video.mp4)' ]
 
 chmod 0644 "$work_dir/config/pr-media/config"
 if PATH="$work_dir/bin:/usr/bin:/bin" \
