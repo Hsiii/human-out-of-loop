@@ -18,6 +18,7 @@ description: "Review committed changes and publish a maintainer-ready draft PR i
 3. For every UI change, reuse supplied media or capture matched, reproducible before/after media from base and head. Capture `Before` from the exact base commit the PR will merge into and `After` from the reviewed head. On follow-ups, reuse or recapture `Before` from that base; never use an earlier feature-branch revision or a prior `After` as the new `Before`:
    - Use video for interaction, motion, or multiple steps; images otherwise.
    - Match viewport, state, data, and action sequence.
+   - Frame screenshots with enough surrounding UI to make the changed element's location and purpose clear, including a page or section landmark and relevant adjacent controls. Prefer viewport- or section-level framing; use tight element crops only when context is genuinely unnecessary.
    - Keep media untracked through `.git/info/exclude`.
    - Never publish with either side missing.
 
