@@ -25,9 +25,10 @@ description: "Review committed changes and publish a maintainer-ready draft PR i
 ## Package
 
 - Use the repository PR template exactly when present.
-- Before writing the title and description, inspect recently merged PRs and Git history for the repository's vocabulary, scope, and level of detail.
+- Before writing the title and description, inspect recently merged PRs and base-branch Git history for the repository's vocabulary, scope, and level of detail.
+- Treat prospective commit subjects as inputs for change scope, not as PR title candidates.
 - Title: `<type>(<scope>): <imperative summary>` using the narrowest Conventional Commits type. Omit an unhelpful scope; reserve `style` for formatting-only changes.
-- Prefer a concise, human-readable title that describes the meaningful effect of the change, not merely the implementation mechanism.
+- Write a concise, human-readable title around the complete user-visible or system-visible outcome that makes the change valuable. Make it stand alone for a reviewer who has not read the description.
 - Add issue-closing syntax when the change resolves an issue.
 - Do not invent template sections or include generic command output.
 - Open the description with a short prose explanation of the problem or user need and how the change addresses it. Follow with implementation bullets when they help reviewers; do not lead with an implementation inventory.
