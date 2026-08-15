@@ -1,69 +1,33 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-skill_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
-uploader="$skill_root/scripts/pr-media-upload"
+repo_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../../.." && pwd)"
+uploader="$repo_root/skills/pr/scripts/pr-media-upload"
 work_dir="$(mktemp -d)"
 trap 'rm -rf -- "$work_dir"' EXIT
 
-install -d -m 0700 "$work_dir/config/pr-media" "$work_dir/bin"
-printf '%s\n' \
-  'url=https://media.example.test' \
-  'token=test-token-abcdefghijklmnopqrstuvwxyz-0123456789' \
-  >"$work_dir/config/pr-media/config"
-chmod 0600 "$work_dir/config/pr-media/config"
+fake_npx="$work_dir/npx"
+printf '%s\n' '#!/usr/bin/env bash' 'printf "%s\n" "$@" >"$PR_MEDIA_TEST_ARGS"' 'if [[ " $* " == *" auth status --quiet "* ]]; then exit 0; fi' 'printf "![PR preview](https://media.example.test/test.png)\n"' >"$fake_npx"
+chmod +x "$fake_npx"
 
 source_file="$work_dir/preview.png"
-printf '%s' \
-  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=' |
-  base64 --decode >"$source_file"
+printf test >"$source_file"
+export PR_MEDIA_NPX_COMMAND="$fake_npx"
+export PR_MEDIA_TEST_ARGS="$work_dir/args"
 
-printf '%s\n' \
-  '#!/bin/sh' \
-  'case " $* " in *test-token-*) exit 1 ;; esac' \
-  'arguments="$*"' \
-  'config=' \
-  'while [ "$#" -gt 0 ]; do' \
-  '  if [ "$1" = "--config" ]; then config="$2"; shift 2; continue; fi' \
-  '  shift' \
-  'done' \
-  'grep -Fq "Authorization: Bearer test-token-" "$config"' \
-  'case " $arguments " in' \
-  '  *"X-PR-Media-Filename: upload.mp4"*)' \
-  '    printf "![PR video preview](https://media.example.test/preview.gif)<br>[PR demo video](https://media.example.test/video.mp4)\\n"' \
-  '    ;;' \
-  '  *) printf "![PR preview](https://media.example.test/test.png)\\n" ;;' \
-  'esac' \
-  >"$work_dir/bin/curl"
-chmod +x "$work_dir/bin/curl"
+"$uploader" --available
+grep -Fqx 'sago-media@0.1.0' "$work_dir/args"
+grep -Fqx 'status' "$work_dir/args"
 
-PATH="$work_dir/bin:/usr/bin:/bin" \
-XDG_CONFIG_HOME="$work_dir/config" \
-  "$uploader" --available
-output="$(
-  PATH="$work_dir/bin:/usr/bin:/bin" \
-  XDG_CONFIG_HOME="$work_dir/config" \
-    "$uploader" --repo Hsiii/example --pr 42 "$source_file"
-)"
-[ "$output" = \
-  '![PR preview](https://media.example.test/test.png)' ]
+output="$("$uploader" --repo Hsiii/example --pr 42 "$source_file")"
+[ "$output" = '![PR preview](https://media.example.test/test.png)' ]
+grep -Fqx 'upload' "$work_dir/args"
+grep -Fqx -- '--output' "$work_dir/args"
+grep -Fqx 'markdown' "$work_dir/args"
 
-video_file="$work_dir/preview.mp4"
-printf 'video' >"$video_file"
-video_output="$(
-  PATH="$work_dir/bin:/usr/bin:/bin" \
-  XDG_CONFIG_HOME="$work_dir/config" \
-    "$uploader" --repo Hsiii/example --pr 42 "$video_file"
-)"
-[ "$video_output" = \
-  '![PR video preview](https://media.example.test/preview.gif)<br>[PR demo video](https://media.example.test/video.mp4)' ]
-
-chmod 0644 "$work_dir/config/pr-media/config"
-if PATH="$work_dir/bin:/usr/bin:/bin" \
-  XDG_CONFIG_HOME="$work_dir/config" \
-  "$uploader" --available >/dev/null 2>&1; then
-  printf 'Uploader accepted a publicly readable token config\n' >&2
+if "$uploader" --repo invalid --pr 42 "$source_file" >/dev/null 2>&1; then
+  printf 'invalid repositories must be rejected\n' >&2
   exit 1
 fi
 
-printf 'PR media client uses private HTTPS credentials without requiring SSH\n'
+printf 'PR media delegates authentication and uploads to the pinned media CLI\n'
