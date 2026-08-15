@@ -50,17 +50,15 @@ configured media service, Codex falls back to GitHub's editor and uses Computer
 Use to attach each file. That works, but takes more time and tokens.
 
 The optional media service lets Codex upload files directly and insert their
-Markdown into the PR body. Ask its operator for a two-line configuration, save
-it at `~/.config/pr-media/config`, and make it readable only by your user:
-
-```text
-url=https://media.example.com
-token=replace-with-your-token
-```
+Markdown into the PR body. Authenticate once through the shared media CLI:
 
 ```bash
-chmod 600 ~/.config/pr-media/config
+npx sago-media auth login
 ```
+
+The browser flow identifies you with GitHub and queues the device for the
+service owner to approve. The PR skill invokes a pinned version of the
+same CLI and never handles upload tokens itself.
 
 When supported by the configured service, uploading a short video returns a GIF
 preview for inline review followed by a link to the full-quality recording. The
