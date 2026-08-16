@@ -16,27 +16,47 @@ Before opening the PR, Codex checks the complete change for:
 - Correct base branch, head branch, commits, and target repository
 - Broken PR formatting or missing media
 
-If the review finds an actionable problem, the PR is not published until it is fixed and reviewed again.
+If `$pr` finds an actionable problem, it stops before publication so you can fix and rerun it. The issue workflows handle that fix-and-review loop for you.
 
 ## Use it
 
-Already finished the work and committed it:
+| Goal | Prompt |
+| --- | --- |
+| Review committed work and open a draft PR | `$pr` |
+| Solve issue #65 | `$solve-issue #65` |
+| Solve five issues in parallel | `$solve-issue 5` |
+| Solve and independently review issue #65 | `$solve-issue-review 65` |
+| Solve and independently review five issues | `$solve-issue-review pick 5` |
 
-> `$pr`
+`$pr` reviews the complete diff and publishes it to the current branch's writable remote. For an external contribution, make the branch track your fork; the skill never follows the parent repository.
 
-Starting from a GitHub issue:
+`$solve-issue` starts from an open issue, implements it in an isolated branch and worktree, runs the relevant checks, fixes review findings, and invokes `$pr`.
 
-> `$solve-issue #65`
+`$solve-issue-review` adds a separate, independent reviewer before `$pr` publication. Batch runs process eligible issues in parallel.
 
-Codex implements the issue, runs the relevant checks, reviews the complete result, fixes any findings, and opens the draft PR.
+The skills may create branches, worktrees, commits, and comparison media.
 
-For a separate developer and reviewer:
+### Follow up on a PR
 
-> `$solve-issue-review 65`
+Reply in the original **Solve #…** or **Solve N issues** task—not the developer or reviewer task. It reuses the existing tasks, branch, worktree, and draft PR instead of duplicating the run.
 
-You can also process multiple eligible issues in parallel:
+> PR #123 has an issue with the empty state. Fix it, review the new commit, and update the draft PR.
 
-> `$solve-issue 5`
+## UI comparisons
+
+For UI changes, `$pr` adds matched before-and-after images or videos. Without the optional media service, it attaches each file through the GitHub editor, which takes more time and tokens. Direct uploads are available after a one-time login:
+
+```bash
+npx sago-media auth login
+```
+
+The browser flow identifies you with GitHub and queues access for the service owner to approve; the skill never handles upload tokens. Short video uploads may include a GIF preview and a link to the full recording automatically.
+
+Service-hosted media may expire. For a long-lived PR, copy images into the GitHub editor or download and re-upload videos so GitHub owns the permanent attachment.
+
+## Automation
+
+Ask Codex to create an automation that runs `$solve-issue [amount]` for each Git repository in a workspace, then choose the schedule and workspace folder.
 
 ## Install
 
