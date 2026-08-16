@@ -8,7 +8,7 @@ Requires the Codex desktop app, GitHub access, and [Ponytail](https://github.com
 
 Ask Codex:
 
-> Install the skills from `Hsiii/human-out-of-loop`.
+> Install the skills from `orangesago/human-out-of-loop`.
 
 ## Use
 
@@ -76,4 +76,4 @@ instead.
 
 Ask Codex to create an automation that runs `$solve-issue [amount]` for each Git repository in a workspace, then choose the schedule and workspace folder.
 
-I use [Hsiii/fish-alias](https://github.com/Hsiii/fish-alias) to collect suitable ongoing projects into one directory with symlinks.
+I use [orangesago/fish-alias](https://github.com/orangesago/fish-alias) to collect suitable ongoing projects into one directory with symlinks.

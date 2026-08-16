@@ -19,7 +19,7 @@ export PR_MEDIA_TEST_ARGS="$work_dir/args"
 grep -Fqx 'sago-media@0.1.0' "$work_dir/args"
 grep -Fqx 'status' "$work_dir/args"
 
-output="$("$uploader" --repo Hsiii/example --pr 42 "$source_file")"
+output="$("$uploader" --repo orangesago/example --pr 42 "$source_file")"
 [ "$output" = '![PR preview](https://media.example.test/test.png)' ]
 grep -Fqx 'upload' "$work_dir/args"
 grep -Fqx -- '--output' "$work_dir/args"

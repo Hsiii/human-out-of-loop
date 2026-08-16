@@ -28,9 +28,9 @@ set -euo pipefail
 
 if [[ "$1 $2" == "repo view" ]]; then
   [[ "$3" == "$EXPECTED_REMOTE_URL" ]]
-  printf 'Hsiii/fork\tmain\t%s\n' "${TEST_PERMISSION:-ADMIN}"
+  printf 'orangesago/fork\tmain\t%s\n' "${TEST_PERMISSION:-ADMIN}"
 elif [[ "$1 $2" == "pr list" ]]; then
-  [[ " $* " == *" --repo Hsiii/fork "* ]]
+  [[ " $* " == *" --repo orangesago/fork "* ]]
   printf '0\n'
 else
   printf 'Unexpected gh command: %s\n' "$*" >&2
@@ -45,7 +45,7 @@ output="$(
   PATH="$work_dir/bin:/usr/bin:/bin" EXPECTED_REMOTE_URL="$remote_url" \
     bash "$preflight"
 )"
-[[ "$output" == PR_PREFLIGHT_OK\ repo=Hsiii/fork\ * ]]
+[[ "$output" == PR_PREFLIGHT_OK\ repo=orangesago/fork\ * ]]
 
 if (
   cd "$work_dir/work"
@@ -56,7 +56,7 @@ if (
   exit 1
 fi
 grep -Fq \
-  'PR_PREFLIGHT_BLOCKED reason=repository_not_writable repo=Hsiii/fork' \
+  'PR_PREFLIGHT_BLOCKED reason=repository_not_writable repo=orangesago/fork' \
   "$work_dir/read-only-error"
 
 printf 'PR preflight pins publication to the writable branch remote\n'
