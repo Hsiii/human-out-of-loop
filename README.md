@@ -2,6 +2,14 @@
 
 Codex skills for turning completed work—or a fresh GitHub issue—into a reviewed, maintainer-ready draft PR.
 
+## Install
+
+Requires the Codex desktop app, GitHub access, and [Ponytail](https://github.com/DietrichGebert/ponytail).
+
+Ask Codex:
+
+> Install the skills from `orangesago/human-out-of-loop`.
+
 ## What it catches
 
 Before opening the PR, Codex checks the complete change for:
@@ -57,11 +65,3 @@ Service-hosted media may expire. For a long-lived PR, copy images into the GitHu
 ## Automation
 
 Ask Codex to create an automation that runs `$solve-issue [amount]` for each Git repository in a workspace, then choose the schedule and workspace folder.
-
-## Install
-
-Requires the Codex desktop app, GitHub access, and [Ponytail](https://github.com/DietrichGebert/ponytail).
-
-Ask Codex:
-
-> Install the skills from `orangesago/human-out-of-loop`.
