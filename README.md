@@ -8,7 +8,7 @@ Requires the Codex desktop app, GitHub access, and [Ponytail](https://github.com
 
 Ask Codex:
 
-> Install the skills from `orangesago/human-out-of-loop`.
+> Install the skills from `sago-cream/human-out-of-loop`.
 
 ## What it catches
 
