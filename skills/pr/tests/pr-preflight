@@ -31,7 +31,7 @@ if [[ "$1 $2" == "repo view" ]]; then
   printf 'orangesago/fork\tmain\t%s\n' "${TEST_PERMISSION:-ADMIN}"
 elif [[ "$1 $2" == "pr list" ]]; then
   [[ " $* " == *" --repo orangesago/fork "* ]]
-  printf '0\n'
+  printf '0\t0\t0\n'
 else
   printf 'Unexpected gh command: %s\n' "$*" >&2
   exit 1
