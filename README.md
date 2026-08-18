@@ -52,15 +52,15 @@ Reply in the original **Solve #…** or **Solve N issues** task—not the develo
 
 ## UI comparisons
 
-For UI changes, `$pr` adds matched before-and-after images or videos. Without the optional media service, it attaches each file through the GitHub editor, which takes more time and tokens. Direct uploads are available after a one-time login:
+For UI changes, `$pr` adds matched before-and-after images or videos. Install the [`gh-image`](https://github.com/drogers0/gh-image) extension once to publish GitHub-owned attachments directly:
 
 ```bash
-npx sago-media auth login
+gh extension install drogers0/gh-image
 ```
 
-The browser flow identifies you with GitHub and queues access for the service owner to approve; the skill never handles upload tokens. Short video uploads may include a GIF preview and a link to the full recording automatically.
+The skill requires `gh-image` v1.3.0 or later. It uses your existing GitHub CLI token when possible and may fall back to your local GitHub browser session. Images render from returned Markdown; videos render inline from the returned GitHub attachment URL.
 
-Service-hosted media may expire. For a long-lived PR, copy images into the GitHub editor or download and re-upload videos so GitHub owns the permanent attachment.
+Existing Sago Media authentication remains supported as a fallback, followed by the GitHub editor when neither direct uploader is available.
 
 ## Automation
 
