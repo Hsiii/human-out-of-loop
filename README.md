@@ -58,9 +58,7 @@ For UI changes, `$pr` adds matched before-and-after images or videos. Install th
 gh extension install drogers0/gh-image
 ```
 
-The skill requires `gh-image` v1.3.0 or later. It uses your existing GitHub CLI token when possible and may fall back to your local GitHub browser session. Images render from returned Markdown; videos render inline from the returned GitHub attachment URL.
-
-Existing Sago Media authentication remains supported as a fallback, followed by the GitHub editor when neither direct uploader is available.
+The skill requires `gh-image` v1.3.0 or later. It uses your existing GitHub CLI token when possible and may fall back to your local GitHub browser session. Images render from returned Markdown; videos render inline from the returned GitHub attachment URL. If `gh-image` cannot upload a file, the skill falls back to pasting it through the GitHub editor.
 
 ## Automation
 

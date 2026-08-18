@@ -17,9 +17,4 @@ if version="$(gh image --version 2>/dev/null)" &&
   printf '%s\n' "$reference"
   exit
 fi
-
-pr="$(gh pr list --repo "$repo" --head "$(git branch --show-current)" --state open --json number,isDraft --jq '.[] | select(.isDraft) | .number' | head -1)"
-[[ -n "$pr" ]] && npx --yes sago-media@0.1.0 auth status --quiet &&
-  exec npx --yes sago-media@0.1.0 upload "$file" --repo "$repo" --pr "$pr" --output markdown
-
 exit 1
