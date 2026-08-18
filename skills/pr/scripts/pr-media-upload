@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+[[ "$#" == 2 ]] || { echo "Usage: pr-media-upload OWNER/REPO FILE" >&2; exit 2; }
+repo="$1"
+file="$(realpath "$2")"
+[[ -f "$file" ]] || exit 2
+git check-ignore -q "$file" && ! git ls-files --error-unmatch "$file" >/dev/null 2>&1 || {
+  echo "PR_MEDIA_BLOCKED reason=tracked_or_not_ignored" >&2
+  exit 3
+}
+
+if version="$(gh image --version 2>/dev/null)" &&
+  [[ "$version" =~ ^gh-image\ ([0-9]+)\.([0-9]+)\. ]] &&
+  (( BASH_REMATCH[1] > 1 || BASH_REMATCH[1] == 1 && BASH_REMATCH[2] >= 3 )) &&
+  reference="$(gh image "$file" --repo "$repo")"; then
+  printf '%s\n' "$reference"
+  exit
+fi
+
+pr="$(gh pr list --repo "$repo" --head "$(git branch --show-current)" --state open --json number,isDraft --jq '.[] | select(.isDraft) | .number' | head -1)"
+[[ -n "$pr" ]] && npx --yes sago-media@0.1.0 auth status --quiet &&
+  exec npx --yes sago-media@0.1.0 upload "$file" --repo "$repo" --pr "$pr" --output markdown
+
+exit 1
