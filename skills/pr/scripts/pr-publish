@@ -22,7 +22,8 @@ fi
 [[ "$base" == "$1" && "$head" == "$2" ]] || { echo "PR_PUBLISH_BLOCKED reason=review_changed" >&2; exit 3; }
 title="$3"
 snapshot="${4:-}"
-[[ "$title" =~ ^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\([^)]+\))?!?:\ .+ ]] || { echo "PR_PUBLISH_BLOCKED reason=invalid_title" >&2; exit 4; }
+title_pattern='^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\([^)]+\))?!?: .+'
+[[ "$title" =~ $title_pattern ]] || { echo "PR_PUBLISH_BLOCKED reason=invalid_title" >&2; exit 4; }
 
 body="$(mktemp)"
 saved="$(mktemp)"
