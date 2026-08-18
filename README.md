@@ -52,15 +52,15 @@ Reply in the original **Solve #…** or **Solve N issues** task—not the develo
 
 ## UI comparisons
 
-For UI changes, `$pr` adds matched before-and-after images or videos as GitHub-owned attachments. Install the [`gh-image`](https://github.com/drogers0/gh-image) extension once to let the skill upload them directly:
+For UI changes, `$pr` adds matched before-and-after images or videos. Install the [`gh-image`](https://github.com/drogers0/gh-image) extension once to publish GitHub-owned attachments directly:
 
 ```bash
 gh extension install drogers0/gh-image
 ```
 
-The skill requires `gh-image` v1.3.0 or later. It uses your existing GitHub CLI token when possible and may fall back to your local GitHub browser session. Images render from returned Markdown; videos render inline from the returned GitHub attachment URL. If the extension is unavailable, the skill uses the GitHub editor instead.
+The skill requires `gh-image` v1.3.0 or later. It uses your existing GitHub CLI token when possible and may fall back to your local GitHub browser session. Images render from returned Markdown; videos render inline from the returned GitHub attachment URL.
 
-This is not backward-compatible with releases that used `npx sago-media`: the Sago Media login and CLI are no longer used for PR attachments.
+Existing Sago Media authentication remains supported as a fallback, followed by the GitHub editor when neither direct uploader is available.
 
 ## Automation
 
