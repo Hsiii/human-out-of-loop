@@ -31,8 +31,8 @@ description: "Review committed changes and publish a maintainer-ready draft PR i
 - Write a concise, human-readable title around the complete user-visible or system-visible outcome that makes the change valuable. Make it stand alone for a reviewer who has not read the description.
 - Add issue-closing syntax when the change resolves an issue.
 - Do not invent template sections or include generic command output.
-- Open the description with a short prose explanation of the problem or user need and how the change addresses it. Follow with implementation bullets when they help reviewers; do not lead with an implementation inventory.
-- Put both UI `Before:` and `After:` media under the best template heading; never publish a comparison with either side missing. Without a template, use concise `## Description` and optional `## Comparison`.
+- Without a repository template, use `## Purpose`, `## Solution`, and `## Verification` for substantive changes. Purpose states the problem or user need. Solution explains the approach and relevant trade-offs; add implementation bullets only when they help reviewers. Verification records the evidence that the change works. For a trivial change, one short paragraph may replace these sections.
+- Put both UI `Before:` and `After:` media under the best template heading; never publish a comparison with either side missing. Without a template, add `## Comparison` only when visual evidence benefits from its own section.
 
 ## Publish
 
